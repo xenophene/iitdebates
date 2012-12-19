@@ -22,18 +22,13 @@
   
   $debatetopic = sanityCheck($_POST['debate-topic']);
   $debatedesc = sanityCheck($_POST['debate-desc']);
-  $debatetheme = sanityCheck($_POST['debate-theme']);
+  $debatetheme = listSanityCheck($_POST['debate-theme']);
   
   // there should be a more sane sanity check here !
-  $participants = sanityCheck($_POST['participant-ids']);
-  $participants = implode(',', array_unique(explode(',', $participants)));
-  $participants .= ',' . $user;
+  $participants = listSanityCheck($_POST['participant-ids']);
   
   /* for each of these participants, if there are some not in the db, we add them */
-  $participant_names = sanityCheck($_POST['participants']);
-  $participant_names = implode(',', array_map('trim', 
-                              array_unique(explode(',', $participant_names))));
-  $participant_names .= ',' . $name;
+  $participant_names = listSanityCheck($_POST['participants']);
 
   addUsers($conn, $participants, $participant_names);
   
