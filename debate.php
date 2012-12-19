@@ -1,7 +1,6 @@
 <?php
   include 'includes/config.php';
   include 'includes/aux_functions.php';
-  include 'includes/pusher-config.php';
   $myfbid = $fb->getUser();
   
   $signed_in = false;
@@ -72,7 +71,7 @@
     <link rel="stylesheet" href="includes/assets/css/style.css"/>
     <link rel="icon" href="includes/assets/ico/favicon.ico"/>
     <title><?php echo $debatetopic;?> | IIT Debates</title>
-    </head>
+  </head>
   <body>
     <div id="header">
       <span class="logo"><a href="home.php">IIT Debates</a></span>

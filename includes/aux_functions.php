@@ -94,6 +94,34 @@
     }
     
   }
+  function postUsers($pids, $pnames, $debatetopic, $debatedesc, $link) {
+    $pidArray = explode(',', $pids);
+    $facebook = new Facebook(array(
+      "appId"   => APP_ID,
+      "secret"  => APP_SECRET
+    ));
+    $queries = array();
+    
+    $body = array(
+              'message'     => $debatetopic,
+              'link'        => $link,
+              'description' => $debatedesc,
+              'name'        => 'IIT Debates'
+            );
+    
+    for ($i = 0; $i < sizeof($pidArray) - 1; $i++) {
+      $pid = trim($pidArray[$i]);
+      $to ='/'.$pid.'/feed';
+      $queries[] = array(
+                'method'      => "POST",
+                'relative_url'=> $to,
+                'body'        => http_build_query($body)
+              );
+    }
+    try{
+      $facebook->api('/?batch='.urlencode(json_encode($queries)), 'POST');
+    } catch (Exception $e) { echo 'error'; }
+  }
 
   function sanityCheck($text) {
     return mysql_real_escape_string(stripslashes($text));

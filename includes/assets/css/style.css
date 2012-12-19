@@ -444,3 +444,9 @@ textarea {
 .reply-post-btn {
   margin: 0 5px 0 0px;
 }
+.central-text {
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+  margin: 200px 0 0 0 auto;
+}

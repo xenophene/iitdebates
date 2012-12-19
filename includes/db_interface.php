@@ -137,6 +137,17 @@
       header('Location: home.php');
     }
   }
+  function getUserScore($conn, $fbid) {
+    $query = "SELECT `score` FROM `users` WHERE `fbid`='$fbid'";
+    if ($result = $conn->query($query)) {
+      if ($row = $result->fetch_assoc()) {
+        if (!empty($row['debscore'])) $uscore = $row['debscore'];
+        else $uscore = 0;
+        return $uscore;
+      }
+    }
+    return 0;
+  }
   /*Return the array of (debate,change) for the $user */
   function debateUpdates($conn, $user){
     $query = "SELECT `debates` FROM `users` ".
