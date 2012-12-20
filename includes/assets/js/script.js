@@ -1,4 +1,3 @@
-/*****************************************/
 /**
   * Defines a debate on a user clicking start a new debate. This function
   * is the base function. The parameters which are requested:
@@ -10,24 +9,24 @@ function defineDebate() {
   $( "#debate-theme" ).autocomplete({
     minLength: 3,
     source: function( request, response ) {
-	    // delegate back to autocomplete, but extract the last term
-	    response( $.ui.autocomplete.filter(
-		    themes, extractLast( request.term ) ) );
+      // delegate back to autocomplete, but extract the last term
+      response( $.ui.autocomplete.filter(
+	      themes, extractLast( request.term ) ) );
     },
     focus: function() {
-	    // prevent value inserted on focus
-	    return false;
+      // prevent value inserted on focus
+      return false;
     },
     select: function( event, ui ) {
-	    var terms = split( this.value );
-	    // remove the current input
-	    terms.pop();
-	    // add the selected item
-	    terms.push( ui.item.value );
-	    // add placeholder to get the comma-and-space at the end
-	    terms.push( "" );
-	    this.value = terms.join( ", " );
-	    return false;
+      var terms = split( this.value );
+      // remove the current input
+      terms.pop();
+      // add the selected item
+      terms.push( ui.item.value );
+      // add placeholder to get the comma-and-space at the end
+      terms.push( "" );
+      this.value = terms.join( ", " );
+      return false;
     },
     maxResults: 4
   });
@@ -54,29 +53,29 @@ function defineDebate() {
           ids.push(result.data[i].id);
         }
         $( "#participants").autocomplete({
-				  minLength: 3,
-				  source: function( request, response ) {
-					  // delegate back to autocomplete, but extract the last term
-					  response( $.ui.autocomplete.filter(
-						  names, extractLast( request.term ) ) );
-				  },
-				  focus: function() {
-					  // prevent value inserted on focus
-					  return false;
-				  },
-				  select: function( event, ui ) {
-					  var terms = split( this.value );
-					  // remove the current input
-					  terms.pop();
-					  // add the selected item
-					  terms.push( ui.item.value );
-					  // add placeholder to get the comma-and-space at the end
-					  terms.push( "" );
-					  this.value = terms.join( ", " );
-					  return false;
-				  },
-				  maxResults: 4
-			  });
+	  minLength: 3,
+	  source: function( request, response ) {
+	    // delegate back to autocomplete, but extract the last term
+	    response( $.ui.autocomplete.filter(
+		    names, extractLast( request.term ) ) );
+	  },
+	  focus: function() {
+		  // prevent value inserted on focus
+		  return false;
+	  },
+	  select: function( event, ui ) {
+		  var terms = split( this.value );
+		  // remove the current input
+		  terms.pop();
+		  // add the selected item
+		  terms.push( ui.item.value );
+		  // add placeholder to get the comma-and-space at the end
+		  terms.push( "" );
+		  this.value = terms.join( ", " );
+		  return false;
+	  },
+	  maxResults: 4
+	});
         friendNames = names;
         friendIds = ids;
       }
@@ -114,9 +113,7 @@ function defineDebate() {
   $(id).modal('show');
 }
 
-/* submit the form entered so far */
-function submitDebateForm() {
-  /*get all the friend names entered, find in the array and convert to their fb ids*/
+$('#start-debate-form form').submit(function() {
   var participants = $('#participants').val().split(',');
   var np = [];
   var indexes = [];
@@ -131,37 +128,71 @@ function submitDebateForm() {
   $('#debate-desc').val($('#debate-desc').val().replace(/(^,)|(,$)/g, ""));
   $('#participants').val(np.join());
   $('#participant-ids').val(indexes.join());
-  $('#start-debate-form form').submit();
-}
+  var debtopic = $('#debate-topic').val();
+  var debdesc = $('#debate-desc').val();
+  var debthemes = $('#debate-theme').val();
+  var partids = $('#participant-ids').val();
+  var partnames = $('#participants').val();
+  var timelimit = $('input[name=time-limit]:checked').val();
+  var privacy = $('input[name=privacy]:checked').val();
+  var postToFb = $('#post-to-fb-input').val();
+  // send these variables over to debate-create and wait! need to think of some authentication?!
+  $.ajax({
+    url: 'includes/debate-create.php',
+    type: 'POST',
+    data: {
+      'debate-topic': debtopic,
+      'debate-desc': debdesc,
+      'debate-theme': debthemes,
+      'participant-ids': partids,
+      'participants':	partnames,
+      'time-limit': timelimit,
+      'privacy': privacy,
+      'post-to-fb-input': postToFb,
+      'uname': uname
+    },
+    success: function (data) {
+      console.log(data);
+      if (!data) console.log('something bad happened!');
+      else window.location = 'debate.php?debid=' + data;
+    },
+    error: function(msg) {
+      console.log(msg);
+    }
+  });
+  $('#start-loading').toggle();
+  return false;
+});
 
 /* subset of defineDebate for a TARGETTED debate*/
 function defineChallengeDebate() {
   defineDebate();
-  $('#participants').val($('tr td.name').html() + ',');
+  $('#participants').val($('tr td.name').html() + ', ');
 }
 
 /* Follow this user, toggling the state/css, to unfollow and follow */
+function auxFollowUser(oldClassName, newClassName, fCode, htmlCode) {
+  $(this).removeClass(oldClassName);
+  $(this).addClass(newClassName);
+  $(this).html(htmlCode);
+  /* send follow AJAX request */
+  $.ajax({
+    url: 'includes/ajax_script.php',
+    type: 'POST',
+    data: {
+      fid: 9,
+      follower: myfbid,
+      followee: uuid,
+      follow: fCode
+    }
+  });
+}
 function followUser () {
-  if ($(this).attr('class') == 'btn btn-primary') {
-    $(this).removeClass('btn-primary');
-    $(this).attr('class', 'btn btn-danger');
-    $(this).html('Unfollow');
-    /* send follow AJAX request */
-    $.ajax({
-      url: 'follow.php',
-      type: 'POST',
-      data: {follower: myfbid, followee: uuid, follow: 1}
-    });
+  if ($(this).hasClass('btn-primary')) {
+    auxFollowUser('btn-primary', 'btn-danger', 1, 'Unfollow');
   }
   else {
-    $(this).removeClass('btn-danger');
-    $(this).attr('class', 'btn btn-primary');
-    $(this).html('Follow');
-    $.ajax({
-      url: 'follow.php',
-      type: 'POST',
-      data: {follower: myfbid, followee: uuid, follow: 0}
-    });
+    auxFollowUser('btn-danger', 'btn-primary', 0, 'Follow');
   }
 }
 
@@ -221,9 +252,13 @@ function debateDelete() {
   $('.delete-debate').tooltip('hide');
   var debid = $(this).parent().parent().children('td.dname').attr('id');
   $.ajax({
-    url: 'remove-debate.php',
+    url: 'includes/ajax_scripts.php',
     type: 'POST',
-    data: {debid:debid, user:myfbid}
+    data: {
+      fid: 6,
+      debid: debid,
+      user: myfbid
+    }
   });
   $(this).parent().parent().fadeOut();
   $(this).parent().parent().remove();
@@ -247,7 +282,9 @@ function showConnections(evt) {
   var n = pids.length;
   var code = '<ul>';
   for (var i = 0; i < n; i++) {
-    code += '<li id="' + pids[i] + '"><a target="_blank" href="home.php?fbid=' + pids[i] + '"><img id="' + pids[i] + '" src="https://graph.facebook.com/' + pids[i] + '/picture"/></a></li>';
+    code += '<li id="' + pids[i] + '"><a target="_blank" href="home.php?fbid=' +
+	    pids[i] + '"><img id="' + pids[i] + '" src="https://graph.facebook.com/' +
+	    pids[i] + '/picture"/></a></li>';
   }
   code += '</ul>';
   var id = '#overlay';
@@ -353,7 +390,6 @@ $(function() {
       $('#start-debate').removeAttr('disabled');
   });
   $('#post-to-fb').click(postFb);
-  $('#start-debate').click(submitDebateForm);
   $('#start-debate-form').on('hidden', clearDebateForm);
   $('#challenge').click(defineChallengeDebate);
   $('#follow').click(followUser);

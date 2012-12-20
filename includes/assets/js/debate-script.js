@@ -11,9 +11,14 @@ function vote(change, elem, className) {
   var comid = elem.parent().attr('name');
   var code = change == 1 ? 1 : 0;
   var request = $.ajax({
-    url: 'post-vote.php',
+    url: 'includes/ajax_scripts.php',
     type: 'POST',
-    data: {comid: comid, userid: user, upvote: code}
+    data: {
+      fid: 8,
+      comid: comid,
+      userid: user,
+      upvote: code
+    }
   });
   var voters = elem.parent().find('.votes ' + className).html();
   elem.parent().find('.votes ' + className).html(voters + ',' + userid);
@@ -74,16 +79,16 @@ function commentHtml(luser, lmyname, comment_value) {
   comment_value = comment_value.replace(/\\/g, '');
   comment_value = comment_value.replace(/(\n)(?! )/g, '<br>');
   comment_value = comment_value.substring(0, comment_value.length - 4);
-  comment += '<span class="author"><a href="home.php?fbid='+luser+'"><img class="author-pic" src="https://graph.facebook.com/' + luser + '/picture?type=small"/>' + lmyname + '</a></span>';
+  comment += '<span class="author"><a href="home.php?fbid=' + luser + 
+             '"><img class="author-pic" src="https://graph.facebook.com/' + luser + 
+             '/picture?type=small"/>' + lmyname + '</a></span>';
   comment += '<span class="comment-data">' + comment_value + '</span>';
-  if(user==luser)
-  comment += '<span class="delete-point votes" title="Delete this point">Delete</span>';
+  if (user == luser) comment += '<span class="delete-point votes" title="Delete this point">Delete</span>';
   comment += '</div>';
   return comment;
 }
 
-function displayComment(side, formatComment)
-{
+function displayComment(side, formatComment) {
   $(side + ' #comments').prepend(formatComment);
   $(side + ' .comment').first().hide();
 // By Utkarsh:Bad effects
@@ -95,13 +100,10 @@ function displayComment(side, formatComment)
   $('.rebutt-point').click(rebutt_point);
 }
 
-function pushComment(pushData)
-{
+function pushComment(pushData) {
 	var formatComment = commentHtml(pushData.author, pushData.authorname, pushData.value);
-  if(pushData.foragainst == 1)
-  	displayComment('#yes', formatComment);
-  else
-  	displayComment('#no', formatComment);
+  if(pushData.foragainst) displayComment('#yes', formatComment);
+  else displayComment('#no', formatComment);
 }
 
 var pusher = new Pusher(PUSHER_APP_KEY);
@@ -111,18 +113,16 @@ channel.bind('new_comment', pushComment);
 /* will look at the support point box, and if somethere will add it to the db
    and render it on the screen at the top even if there are higher votes above */
 function post(side, formatComment, comment, parentComId) {
-  if (side == '#yes')
-    var foragainstVal = 1;
-  else
-    var foragainstVal = 0;
+  var foragainstVal = side == '#yes' ? 1 : 0;
   displayComment(side, formatComment);
 	var data = {
-      "author": user, 
-      "authorname": myname,
-      "value": comment, 
-      "debid": debid, 
-      "foragainst": foragainstVal,
-      "parentId": parentComId
+	  "fid"       : 5,
+    "author"    : user, 
+    "authorname": myname,
+    "value"     : comment, 
+    "debid"     : debid, 
+    "foragainst": foragainstVal,
+    "parentId"  : parentComId
 	};
 	if(pusher.connection.socket_id !== null) {
 	  data.socket_id = pusher.connection.socket_id;
@@ -130,12 +130,9 @@ function post(side, formatComment, comment, parentComId) {
 	
   // send an ajax request to db for this comment
   var request = $.ajax({
-    url: 'post-comment.php',
+    url: 'includes/ajax_scripts.php',
     type: 'POST',
     data: data,
-    headers: {
-	    'X-Requested-With': 'XMLHttpRequest'
-    },
     success: function(data) {
       $(side + ' .comment').first().attr('name', data);
     }
@@ -172,15 +169,10 @@ function cancelReply() {
 function postReply() {
   var origSide = $(this).parent().parent().parent().parent().attr('id');
   var replySide = $(this).parent().attr('id');
-  var newSide = '';
-  if (replySide == 'support')
-    newSide = origSide;
-  else {
-    if (origSide == 'yes')
-      newSide = 'no';
-    else
-      newSide = 'yes';
-  }
+  var newSide;
+  if (replySide == 'support') newSide = origSide;
+  else newSide = origSide == 'yes' ? 'no' : 'yes';
+  
   var comment = $(this).parent().children('textarea').val();
   var parentComId = $(this).parent().parent().attr('name');
   $(this).parent().slideUp("normal", function() { $(this).remove(); } );
@@ -252,7 +244,9 @@ function showConnections(evt) {
   var code = '<ul>';
   var n = pids.length;
   for (var i = 0; i < pids.length; i++) {
-    code += '<li id="' + pids[i] + '"><a target="_blank" href="home.php?fbid=' + pids[i] + '"><img id="' + pids[i] + '" src="https://graph.facebook.com/' + pids[i] + '/picture"/></a></li>';
+    code += '<li id="' + pids[i] + '"><a target="_blank" href="home.php?fbid=' + 
+            pids[i] + '"><img id="' + pids[i] + '" src="https://graph.facebook.com/' + 
+            pids[i] + '/picture"/></a></li>';
   }
   code += '</ul>';
   var id = '#overlay';
@@ -260,7 +254,9 @@ function showConnections(evt) {
 }
 
 function invite_to_debate() {
-  var code = '<input type="text" name="participants" title="Participants" id="participants" class="input-xxlarge ui-autocomplete-input" placeholder="Challenge Friends" autocomplete="off" spellcheck="false"/>';
+  var code = '<input type="text" name="participants" title="Participants" ' + 
+             'id="participants" class="input-xxlarge ui-autocomplete-input" ' +
+             'placeholder="Challenge Friends" autocomplete="off" spellcheck="false"/>';
   code += '<a class="btn btn-primary" id="invite-friends">Invite</a>';
   var heading = 'Invite Friends to debate';
   var id = '#overlay';
@@ -446,11 +442,14 @@ function followDebate() {
     $(this).addClass('btn-danger');
     $(this).addClass('disabled');
     $(this).html('Following');
-    /* send follow AJAX request */
     $.ajax({
-      url: 'follow-debate.php',
+      url: 'includes/ajax_script.php',
       type: 'POST',
-      data: {follower: user, debid: debid}
+      data: {
+	fid: 7,
+	follower: user,
+	debid: debid
+      }
     });
   }
 }

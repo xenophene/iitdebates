@@ -3,7 +3,13 @@
   require_once 'includes/config.php';
 	                
   $user = $fb->getUser();
-  if ($user) header('Location: home.php');
+  if ($user) {
+    try {
+      $profile = $fb->api('/me');
+      $at = $fb->getAccessToken();
+      header('Location: home.php');
+    } catch (FacebookApiException $e) {}
+  }
 ?>
 <!DOCTYPE html>
 <html>

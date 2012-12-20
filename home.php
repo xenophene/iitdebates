@@ -181,7 +181,7 @@
         <h1>Start a new debate</h1>
       </div>
       <div class="modal-body">
-        <form action="includes/debate-create.php" method="POST">
+        <form>
           <input type="text" title="Debate's Topic" name="debate-topic" id="debate-topic" class="input-xxlarge" placeholder="Debate Topic" autocomplete="off"/>
           <textarea class="input-xxlarge" title="Debate's Description" name="debate-desc" id="debate-desc" placeholder="Debate Description" rows="4" autocomplete="off"></textarea>
           <input type="text" name="debate-theme" title="Debate's Themes" id="debate-theme" class="input-xxlarge" placeholder="Debate Themes" autocomplete="off" spellcheck="false"/>
@@ -195,11 +195,15 @@
           </div>
           <div id="radio2" title="Set the debate privacy">
             <input type="radio" id="privacy-1" name="privacy" value="0"  checked="checked" /><label for="privacy-1">Public Debate</label>
-	          <input type="radio" id="privacy-2" name="privacy" value="1" /><label for="privacy-2">Private Debate</label>
+	    <input type="radio" id="privacy-2" name="privacy" value="1" /><label for="privacy-2">Private Debate</label>
           </div>
+          <!--
+          NEEDS TO BE INTEGRATED WITH FB STORIES, BEHIND THE SCENES!
           <a class="btn btn-inverse active" title="Post to Facebook" id="post-to-fb" data-toggle="button">This debate will be posted to Facebook</a>
+          -->
           <input type="hidden" name="post-to-fb-input" id="post-to-fb-input" value="1"/>
-          <button class="btn btn-primary" id="start-debate">Start</button>
+          <button type="submit" class="btn btn-primary" id="start-debate">Start</button>
+          <img src="includes/assets/img/loading3.gif" alt="Loading" class="hide" id="start-loading" title="Loading"/>
         </form>
       </div>
     </div>

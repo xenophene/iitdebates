@@ -1,7 +1,6 @@
 <?php
   include 'includes/config.php';
   include 'includes/aux_functions.php';
-  include 'includes/pusher-config.php';
   $myfbid = $fb->getUser();
   
   $signed_in = false;
@@ -34,9 +33,10 @@
   $debscore = $debate['debscore'];
   $privacy = $debate['privacy'];
   $token = $debate['token'];
+  
   $next_url = 'debate.php?debid=' . $debid;
-  $time = timeStamp($debate['startdate']);
-  if ($time == -1) $time = '';
+  
+  $time = ($debate['time']) ? timeStamp($debate['time']) : '';
   
   $creator = getDebateCreator($conn, $userid);
   
@@ -72,7 +72,7 @@
     <link rel="stylesheet" href="includes/assets/css/style.css"/>
     <link rel="icon" href="includes/assets/ico/favicon.ico"/>
     <title><?php echo $debatetopic;?> | IIT Debates</title>
-    </head>
+  </head>
   <body>
     <div id="header">
       <span class="logo"><a href="home.php">IIT Debates</a></span>
@@ -106,7 +106,7 @@
           <?php
             $themes = explode(',', $debatethemes);
             foreach ($themes as $theme)
-              echo '<span class="theme" title="Debate Themes">'.$theme.'</span>';
+              if ($theme) echo '<span class="theme" title="Debate Themes">'.$theme.'</span>';
           ?>
         </div>
       </div>

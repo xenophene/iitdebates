@@ -39,7 +39,7 @@ function searchSetup() {
     success: function(data) {
       for (var i = 0; i < data.length; i++) {
         var x = data[i];
-        names.push(x.name);
+        names.push($.trim(x.name));
         uids.push(x.uid);
         searchtypes.push(x.ltype);
       }
@@ -50,27 +50,23 @@ function searchSetup() {
     }
   });
   $('#friend-search').keypress(function(evt) {
-    if (evt.which != 13)
-      return true;
+    if (evt.which != 13) return true;
     else {
       var sname = $(this).val();
       console.log(sname);
       var i = $.inArray(sname, names);
       if (i != -1) {
-        if (searchtypes[i] == 'u')
-          location.href = 'home.php?uid=' + uids[i];
-        else
-          location.href = 'debate.php?debid=' + uids[i];
+        if (searchtypes[i] == 'u') window.location = 'home.php?uid=' + uids[i];
+        else  window.location = 'debate.php?debid=' + uids[i];
       }
+      return false;
     }
   });
   $('.icon-search').click(function() {
     var sname = $(this).parent().children('input').val();
     var i = $.inArray(sname, names);
-    if (i != -1)
-      location.href = 'home.php?uid=' + uids[i];
-    else
-      $(this).parent().children('input').val('');
+    if (i != -1) window.location = 'home.php?uid=' + uids[i];
+    else $(this).parent().children('input').val('');
   });
 }
 
