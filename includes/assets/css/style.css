@@ -226,6 +226,7 @@ td.interest-elements-p:hover {
 }
 .theme {
   padding: 0 5px 0 5px;
+  margin-right: 5px;
   font-weight: bold;
   background: #eee;
   border-radius: 4px;

@@ -1,8 +1,9 @@
 <?php
   include 'db_interface.php';
-  function timeStamp ($session_time) {
-    if($session_time <= 0) return - 1;
-    $time_difference = time() - $session_time;
+  function timeStamp ($creation_time) {
+    if($creation_time <= 0) return -1;
+    
+    $time_difference = time() - $creation_time;
     $seconds = $time_difference;
     $minutes = round($time_difference / 60 );
     $hours = round($time_difference / 3600 ); 
@@ -94,35 +95,41 @@
     }
     
   }
-  function postUsers($pids, $pnames, $debatetopic, $debatedesc, $link) {
-    $pidArray = explode(',', $pids);
-    $facebook = new Facebook(array(
-      "appId"   => APP_ID,
-      "secret"  => APP_SECRET
-    ));
-    $queries = array();
-    
-    $body = array(
-              'message'     => $debatetopic,
-              'link'        => $link,
-              'description' => $debatedesc,
-              'name'        => 'IIT Debates'
-            );
-    
-    for ($i = 0; $i < sizeof($pidArray) - 1; $i++) {
-      $pid = trim($pidArray[$i]);
-      $to ='/'.$pid.'/feed';
-      $queries[] = array(
-                'method'      => "POST",
-                'relative_url'=> $to,
-                'body'        => http_build_query($body)
-              );
-    }
-    try{
-      $facebook->api('/?batch='.urlencode(json_encode($queries)), 'POST');
-    } catch (Exception $e) { echo 'error'; }
-  }
-
+  
+  // HAS TO BE SERIOUSLY RETHOUGHT!
+  //function postUsers($pids, $pnames, $debatetopic, $debatedesc, $link) {
+  //  $pidArray = explode(',', $pids);
+  //  $facebook = new Facebook(array(
+  //    "appId"   => APP_ID,
+  //    "secret"  => APP_SECRET
+  //  ));
+  //  $body = array(
+  //            'message'     => $debatetopic,
+  //            'link'        => $link,
+  //            'description' => $debatedesc,
+  //            'name'        => 'IIT Debates'
+  //          );
+  //  
+  //  for ($i = 0; $i < sizeof($pidArray) - 1; $i++) {
+  //    $pid = trim($pidArray[$i]);
+  //    $to ='/'.$pid.'/feed';
+  //    $queries = array(
+  //                'method'      => "POST",
+  //                'relative_url'=> $to,
+  //                'body'        => http_build_query($body)
+  //              );
+  //  }
+  //  try{
+  //    $facebook->api('/?batch='.urlencode(json_encode($queries)), 'POST');
+  //  } catch (Exception $e) { echo 'error'; }
+  //}
+  //function removeFromString($str, $needle) {
+  //  $p = explode(',', $str);
+  //  if ($key = array_search($needle, $p) !== false) unset($p[$key]);
+  //  $p = implode(',', $p);
+  //  return $p;
+  //}
+  
   function sanityCheck($text) {
     return mysql_real_escape_string(stripslashes($text));
   }
@@ -130,6 +137,11 @@
     $text = sanityCheck($text);
     $text = array_filter(array_map('trim', array_unique(explode(',', $text))));
     return implode(',', $text);
+  }
+  function addToString($list, $user) {
+    $a = explode(',', trim($list));
+    array_push($a, $user);
+    return listSanityCheck(implode(',', $a));
   }
 
 ?>

@@ -33,9 +33,10 @@
   $debscore = $debate['debscore'];
   $privacy = $debate['privacy'];
   $token = $debate['token'];
+  
   $next_url = 'debate.php?debid=' . $debid;
-  $time = timeStamp($debate['startdate']);
-  if ($time == -1) $time = '';
+  
+  $time = ($debate['time']) ? timeStamp($debate['time']) : '';
   
   $creator = getDebateCreator($conn, $userid);
   
@@ -105,7 +106,7 @@
           <?php
             $themes = explode(',', $debatethemes);
             foreach ($themes as $theme)
-              echo '<span class="theme" title="Debate Themes">'.$theme.'</span>';
+              if ($theme) echo '<span class="theme" title="Debate Themes">'.$theme.'</span>';
           ?>
         </div>
       </div>

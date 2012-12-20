@@ -74,8 +74,13 @@
   }
   
   function updateActivity ($conn, $source, $type, $target, $sourcename, $targetname) {
-    $query = "INSERT INTO `updates` (`source`,`type`,`target`,`sourcename`,`targetname`) ".
-             "VALUES ('$source','$type','$target','$sourcename','$targetname')";
+    $t = time();
+    $query = "INSERT INTO `updates` (`source`,`type`,`target`,`sourcename`,`targetname`,`timestamp`) ".
+             "VALUES ('$source','$type','$target','$sourcename','$targetname', '$t')";
+    $conn->query($query);
+  }
+  function removeUpdateEntry($conn, $source, $target) {
+    $query = "DELETE FROM `updates` WHERE `source`='$source' AND `target`='$target'";
     $conn->query($query);
   }
   function updateToken($conn, $user, $debate, $token) {
@@ -124,7 +129,6 @@
     }
     return array();
   }
-  
   function getDebate($conn, $debid) {
     $query = "SELECT * FROM `debates` WHERE `debid`='$debid'";
     if ($result = $conn->query($query)) {
@@ -187,32 +191,32 @@
 	  $query = "SELECT * FROM `updates` ORDER BY `updateid` DESC";
 	  if ($result = $conn->query($query)) {
 	    while ($row = $result->fetch_assoc()) {
-        $type = $row['type'];
-        $sourceid = $row['source'];
-        $targetid = $row['target'];
-        $sourcename = $row['sourcename'];
-        $targetname =$row['targetname'];
-        echo '<div class="update">';
-        switch ($type) {
-          case 0: // created debate 
-            echo '<a href="home.php?uid='.$sourceid.'">'.$sourcename.'</a> started debate '.
-                 '<a href="debate.php?debid='.$targetid.'">'.$targetname.'</a>';
-            break;
-          case 1: // challenged on debate
-            echo '<a href="home.php?uid='.$sourceid.'">'.$sourcename.'</a> challenged '.
-                 'to debate on <a href="home.php?uid='.$targetid.'">'.$targetname.'</a>';
-            break;
-          case 2: // followed User
-            echo '<a href="home.php?uid='.$sourceid.'">'.$sourcename.'</a> is now following '.
-                 '<a href="home.php?uid='.$targetid.'">'.$targetname.'</a>';
-            break;
-          case 3: // followed Debate
-            echo '<a href="home.php?uid='.$sourceid.'">'.$sourcename.'</a> is now following '.
-                 'the debate <a href="debate.php?debid='.$targetid.'">'.$targetname.'</a>';
-            break;
-        }
-        echo '</div>';
-      }
+	      $type = $row['type'];
+	      $sourceid = $row['source'];
+	      $targetid = $row['target'];
+	      $sourcename = $row['sourcename'];
+	      $targetname =$row['targetname'];
+	      echo '<div class="update">';
+	      switch ($type) {
+		case 0: // created debate 
+		  echo '<a href="home.php?fbid='.$sourceid.'">'.$sourcename.'</a> started debate '.
+		       '<a href="debate.php?debid='.$targetid.'">'.$targetname.'</a>';
+		  break;
+		case 1: // challenged on debate
+		  echo '<a href="home.php?fbid='.$sourceid.'">'.$sourcename.'</a> challenged '.
+		       'to debate on <a href="home.php?fbid='.$targetid.'">'.$targetname.'</a>';
+		  break;
+		case 2: // followed User
+		  echo '<a href="home.php?fbid='.$sourceid.'">'.$sourcename.'</a> is now following '.
+		       '<a href="home.php?fbid='.$targetid.'">'.$targetname.'</a>';
+		  break;
+		case 3: // followed Debate
+		  echo '<a href="home.php?fbid='.$sourceid.'">'.$sourcename.'</a> is now following '.
+		       'the debate <a href="debate.php?debid='.$targetid.'">'.$targetname.'</a>';
+		  break;
+	      }
+	      echo '</div>';
+	    }
     }
   }
   function commentsArray($conn, $debid) {

@@ -11,9 +11,14 @@ function vote(change, elem, className) {
   var comid = elem.parent().attr('name');
   var code = change == 1 ? 1 : 0;
   var request = $.ajax({
-    url: 'post-vote.php',
+    url: 'includes/ajax_scripts.php',
     type: 'POST',
-    data: {comid: comid, userid: user, upvote: code}
+    data: {
+      fid: 8,
+      comid: comid,
+      userid: user,
+      upvote: code
+    }
   });
   var voters = elem.parent().find('.votes ' + className).html();
   elem.parent().find('.votes ' + className).html(voters + ',' + userid);
@@ -164,15 +169,10 @@ function cancelReply() {
 function postReply() {
   var origSide = $(this).parent().parent().parent().parent().attr('id');
   var replySide = $(this).parent().attr('id');
-  var newSide = '';
-  if (replySide == 'support')
-    newSide = origSide;
-  else {
-    if (origSide == 'yes')
-      newSide = 'no';
-    else
-      newSide = 'yes';
-  }
+  var newSide;
+  if (replySide == 'support') newSide = origSide;
+  else newSide = origSide == 'yes' ? 'no' : 'yes';
+  
   var comment = $(this).parent().children('textarea').val();
   var parentComId = $(this).parent().parent().attr('name');
   $(this).parent().slideUp("normal", function() { $(this).remove(); } );
@@ -442,11 +442,14 @@ function followDebate() {
     $(this).addClass('btn-danger');
     $(this).addClass('disabled');
     $(this).html('Following');
-    /* send follow AJAX request */
     $.ajax({
-      url: 'follow-debate.php',
+      url: 'includes/ajax_script.php',
       type: 'POST',
-      data: {follower: user, debid: debid}
+      data: {
+	fid: 7,
+	follower: user,
+	debid: debid
+      }
     });
   }
 }
