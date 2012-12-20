@@ -124,9 +124,7 @@
   //}
   function removeFromString($str, $needle) {
     $p = explode(',', $str);
-    if ($key = array_search($needle, $p) !== false) unset($p[$key]);
-    $p = implode(',', $p);
-    return $p;
+    return implode(',', array_diff($p, array($needle)));
   }
   
   function sanityCheck($text) {

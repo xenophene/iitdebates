@@ -22,7 +22,6 @@
   $is_participant = array_search($myfbid, $ps);
   
   $fs = explode(',', listSanityCheck($debate['followers']));
-  
   $debatetopic = $debate['topic'];
   $debatedesc = $debate['description'];
   $debatethemes = $debate['themes'];
@@ -132,7 +131,7 @@
       </table>
       <div class="engage">
         <?php if (!$is_participant and $signed_in): 
-          if (!array_search($myfbid, $fs)) {
+          if (!in_array($myfbid, $fs)) {
             $fclass = 'btn btn-primary';
             $ftext = 'Follow';
           } else {

@@ -155,13 +155,13 @@
   function removeDebate($_POST, $conn, $fb) {
     $debid = $_POST['debid'];
     $user = $_POST['user'];
-    if ($user != $fb->getUser()) return;  // can only delete my own debates
+    if ($user != $fb->getUser() or !$fb->getUser()) return;  // can only delete my own debates
     // need to also unsubscribe from the UPDATES HERE!
     $query = "SELECT * FROM `debates` WHERE `debid`='$debid'";
     if ($result = $conn->query($query)) {
       if ($row = $result->fetch_assoc()) {
-        $p = removeFromString($row['participants'], $user);
-        $f = removeFromString($row['followers'], $user);
+        $p = removeFromString(listSanityCheck($row['participants']), $user);
+        $f = removeFromString(listSanityCheck($row['followers']), $user);
         $query = "UPDATE `debates` SET `participants`='$p', `followers`='$f' WHERE `debid`='$debid'";
         $conn->query($query);
         removeUpdateEntry($conn, $user, $debid);
