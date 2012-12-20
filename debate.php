@@ -76,7 +76,6 @@
       <span class="logo"><a href="home.php">IIT Debates</a></span>
       <span class="fb-ju-ab">
         <ul>
-          <li><a href="fb-ju-ab.php#feedback" id="fb">Feedback</a></li>
           <li><a href="fb-ju-ab.php#join-us" id="ju">Join Us</a></li>
           <li><a href="fb-ju-ab.php#about" id="ab">About</a></li>
         </ul>

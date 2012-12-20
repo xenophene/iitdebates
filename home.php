@@ -33,7 +33,6 @@
       <span class="logo"><a href="home.php">IIT Debates</a></span>
       <span class="fb-ju-ab">
         <ul>
-          <li><a href="fb-ju-ab.php#feedback" id="fb">Feedback</a></li>
           <li><a href="fb-ju-ab.php#join-us" id="ju">Join Us</a></li>
           <li><a href="fb-ju-ab.php#about" id="ab">About</a></li>
         </ul>
@@ -46,11 +45,7 @@
             <div class="icon-search icon-black"></div>
           </li>
           <li class="log-out-link"><a href="home.php">Home</a></li>
-          <li class="log-out-link" id="log-out-btn">
-            <a href="logout.php">
-              Log Out
-            </a>
-          </li>
+          <li class="log-out-link" id="log-out-btn"><a href="logout.php">Log Out</a></li>
         <?php else: ?>
           <li class="log-out-link">
             <a href="<?php echo $fb->getLoginUrl($params);?>">Sign In</a>

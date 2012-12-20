@@ -6,6 +6,7 @@
      Each of these functions do the appropriate argument containment checks
   */
   include 'config.php';
+  include 'aux_functions.php';
   if (isset($_POST['fid'])) {
     
     $fid = $_POST['fid'];
@@ -20,6 +21,7 @@
       case 8: postVote($_POST, $conn, $fb); break;
       case 9: followUser($_POST, $conn, $fb); break;
       case 10: changeInterests($_POST, $conn, $fb); break;
+      case 11: saveFeedback($_POST, $conn, $fb); break;
       default: pass();
     }
   }
@@ -233,6 +235,13 @@
     $query = "UPDATE `users` SET `interests`='$interest' WHERE `fbid`='$fbid'";
     $conn->query($query);
     $result = mysql_query($query);
+  }
+  function saveFeedback($_POST, $conn, $fb) {
+    $e = sanityCheck($_POST['email']);
+    $c = sanityCheck($_POST['comment']);
+    $query = "INSERT INTO `feedback` (`email`, `comment`) VALUES ('$e', '$c')";
+    $conn->query($query);
+    echo $query;
   }
   function pass() {}
 ?>

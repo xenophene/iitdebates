@@ -15,14 +15,16 @@ function extractLast( term ) {
   return split( term ).pop();
 }
 // add the border to the taller of the left-right divs
-function add_divider() {
-  var h1 = $('#content .leftcol').css('height').split('px')[0];
-  var h2 = $('#content .rightcol').css('height').split('px')[0];
-  if (parseInt(h1) >= parseInt(h2)) {
-    $('#content .leftcol').css('border-right', '1px solid #eee');
-  } else {
-    $('#content .rightcol').css('border-left', '1px solid #eee');
-  }
+function addDivider() {
+  try {
+    var h1 = $('#content .leftcol').css('height').split('px')[0];
+    var h2 = $('#content .rightcol').css('height').split('px')[0];
+    if (parseInt(h1) >= parseInt(h2)) {
+      $('#content .leftcol').css('border-right', '1px solid #eee');
+    } else {
+      $('#content .rightcol').css('border-left', '1px solid #eee');
+    }
+  } catch (err) {}
 }
 /* Set up the user search functionality by querying through AJAX the user base */
 function searchSetup() {
@@ -37,6 +39,7 @@ function searchSetup() {
       console.log(msg);
     },
     success: function(data) {
+      console.log(data);
       for (var i = 0; i < data.length; i++) {
         var x = data[i];
         names.push($.trim(x.name));
@@ -96,7 +99,100 @@ function nameFromId(elmt, fbid) {
     }
   });
 }
+function validateEmail(email) { 
+    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email);
+}
+function setUpFeedback() {
+  var code = '<div class="feedback-panel">' +
+             '<a class="feedback-tab">Feedback</a>' +
+             '<div id="form-wrap">' + 
+             '<form id="send-feedback">' +
+             
+             '<div class="control-group">' +
+             '<label class="control-label" for="email">Email</label>' +
+             '<div class="controls"><input type="text" class="input-large" id="email" placeholder="your email"/></div></div>' +
+             
+             '<div class="control-group">' +
+             '<label class="control-label" for="msg">Feedback</label>' +
+             '<div class="controls"><textarea id="msg" name="msg" rows="10" cols="30" placeholder="your feedback"></textarea></div></div>' +
+             
+             '<div class="control-group"><div class="controls">' +
+             '<button type="submit" class="btn btn-primary">submit</button></div></div>' +
+             '</form></div></div>';
+  $('body').append(code);
+  
+  var feedbackTab = {
+    speed: 300,
+    containerWidth: $('.feedback-panel').outerWidth(),
+    containerHeight: $('.feedback-panel').outerHeight(),
+    tabWidth: $('.feedback-tab').outerWidth(),
 
+    init: function() {
+      $('.feedback-panel').css('height',feedbackTab.containerHeight + 'px');
+
+      $('a.feedback-tab').click(function(event){
+
+        if ($('.feedback-panel').hasClass('open')) {
+          $('.feedback-panel').animate({left:'-' + feedbackTab.containerWidth}, feedbackTab.speed)
+          .removeClass('open');
+        } else {
+          $('.feedback-panel').animate({left:'0'},  feedbackTab.speed)
+          .addClass('open');
+        }
+        event.preventDefault();
+      });
+    }
+  };
+ 
+  feedbackTab.init();
+ 
+  $("#send-feedback").submit(function() {
+    var email = $("#email").val();
+    var message = $("#msg").val();
+    if (!validateEmail(email)) {
+      $('#email').attr('placeholder', 'please enter a valid email')
+      .val('')
+      .parent().parent().addClass('error');
+      return false;
+    } else {
+      $('#email').parent().parent().removeClass('error');
+    }
+    if (!$.trim(message)) {
+      $('#msg').attr('placeholder', 'please enter some feedback')
+      .parent().parent().addClass('error');
+      return false;
+    } else {
+      $('#msg').parent().parent().removeClass('error');
+    }
+    var response_message = "Thank you for your feedback, sir!"
+    $.ajax({
+      type: "POST",
+      url: "includes/ajax_scripts.php",
+      data: {
+        fid: 11,
+        email: email,
+        comment: message
+      },
+      success: function(data) {
+        console.log(data);
+        $('#form-wrap').html("<div id='response-message'></div>");
+        $('#response-message').html("<p>" + response_message +"</p>")
+        .hide()
+        .fadeIn(500)
+        .animate({opacity: 1.0}, 1000)
+        .fadeIn(0, function() {
+          $('.feedback-panel')
+          .animate({left:'-' + (feedbackTab.containerWidth + feedbackTab.tabWidth)}, 
+          (feedbackTab.speed))
+          .removeClass('open');
+        })
+      }
+    });
+    return false;
+  });
+}
 $(function () {
-  add_divider();  
+  addDivider();
+  setUpFeedback();
 });
