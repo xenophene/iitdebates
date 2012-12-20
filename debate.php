@@ -17,13 +17,11 @@
   $debate = getDebate($conn, $debid);
   $userid = $debate['creator'];
   
-  $ps = $debate['participants'];
-  $ps = array_filter(array_map('trim', explode(',', $ps)));
+  $ps = explode(',', listSanityCheck($debate['participants']));
   
   $is_participant = array_search($myfbid, $ps);
   
-  $fs = $debate['followers'];
-  $fs = array_filter(array_map('trim', explode(',', $fs)));
+  $fs = explode(',', listSanityCheck($debate['followers']));
   
   $debatetopic = $debate['topic'];
   $debatedesc = $debate['description'];
