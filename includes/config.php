@@ -4,7 +4,7 @@
   $hn = "localhost";
   $user = "root";
   $pwd = "";
-  $db = "iitdebates";
+  $db = "debators";
   
   $conn = new mysqli($hn, $user, $pwd, $db);
   
