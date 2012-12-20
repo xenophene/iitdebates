@@ -39,7 +39,6 @@ function searchSetup() {
       console.log(msg);
     },
     success: function(data) {
-      console.log(data);
       for (var i = 0; i < data.length; i++) {
         var x = data[i];
         names.push($.trim(x.name));

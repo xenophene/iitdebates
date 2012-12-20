@@ -218,7 +218,7 @@
     $follow = sanityCheck($_POST['follow']); // whether to follow or unfollow
     $user = $fb->getUser();
     if ($follower != $user or !$user) return;
-    if ($follow) {
+    if ($follow == '1') {
       $query = "INSERT INTO `follower` (`uid`, `follower`) VALUES ('$followee', '$follower')";
       $conn->query($query);
     } else {

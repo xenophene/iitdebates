@@ -171,28 +171,31 @@ function defineChallengeDebate() {
 }
 
 /* Follow this user, toggling the state/css, to unfollow and follow */
-function auxFollowUser(oldClassName, newClassName, fCode, htmlCode) {
-  $(this).removeClass(oldClassName);
-  $(this).addClass(newClassName);
-  $(this).html(htmlCode);
+function auxFollowUser(elmt, oldClassName, newClassName, fCode, htmlCode) {
+  elmt.removeClass(oldClassName);
+  elmt.addClass(newClassName);
+  elmt.html(htmlCode);
   /* send follow AJAX request */
   $.ajax({
-    url: 'includes/ajax_script.php',
+    url: 'includes/ajax_scripts.php',
     type: 'POST',
     data: {
       fid: 9,
       follower: myfbid,
       followee: uuid,
       follow: fCode
-    }
+    },
+	success: function (data) {
+	  console.log(data);
+	}
   });
 }
 function followUser () {
   if ($(this).hasClass('btn-primary')) {
-    auxFollowUser('btn-primary', 'btn-danger', 1, 'Unfollow');
+    auxFollowUser($(this), 'btn-primary', 'btn-danger', 1, 'Unfollow');
   }
   else {
-    auxFollowUser('btn-danger', 'btn-primary', 0, 'Follow');
+    auxFollowUser($(this), 'btn-danger', 'btn-primary', 0, 'Follow');
   }
 }
 

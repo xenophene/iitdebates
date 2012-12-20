@@ -53,8 +53,9 @@
   }
   
   function getConnections($conn, $key1, $value, $key2) {
+	$key3 = $key2 == 'follower' ? 'fbid' : $key2;
     $query = "SELECT `users`.`fbid` FROM `follower`, `users` ".
-             "WHERE `follower`.`$key1`='$value' AND `follower`.`$key2`=`users`.`$key2`";
+             "WHERE `follower`.`$key1`='$value' AND `follower`.`$key2`=`users`.`$key3`";
     if ($result = $conn->query($query)) {
       $ids = array();
       while ($row = $result->fetch_assoc()) {
