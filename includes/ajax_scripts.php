@@ -17,7 +17,7 @@
       case 4: inviteFriends($_POST, $conn, $fb); break;
       case 5: postComment($_POST, $conn, $fb); break;
       case 6: removeDebate($_POST, $conn, $fb); break;
-      case 7: followeDebate($_POST, $conn, $fb); break;
+      case 7: followDebate($_POST, $conn, $fb); break;
       case 8: postVote($_POST, $conn, $fb); break;
       case 9: followUser($_POST, $conn, $fb); break;
       case 10: changeInterests($_POST, $conn, $fb); break;
@@ -169,8 +169,8 @@
     }
   }
   function followDebate($_POST, $conn, $fb) {
-    $debid = $_POST['debid'];
-    $nf = $_POST['follower'];
+    $debid = sanityCheck($_POST['debid']);
+    $nf = sanityCheck($_POST['follower']);
     $user = $fb->getUser();
     if ($nf != $user or !$user) return;
     

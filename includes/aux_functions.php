@@ -122,12 +122,12 @@
   //    $facebook->api('/?batch='.urlencode(json_encode($queries)), 'POST');
   //  } catch (Exception $e) { echo 'error'; }
   //}
-  //function removeFromString($str, $needle) {
-  //  $p = explode(',', $str);
-  //  if ($key = array_search($needle, $p) !== false) unset($p[$key]);
-  //  $p = implode(',', $p);
-  //  return $p;
-  //}
+  function removeFromString($str, $needle) {
+    $p = explode(',', $str);
+    if ($key = array_search($needle, $p) !== false) unset($p[$key]);
+    $p = implode(',', $p);
+    return $p;
+  }
   
   function sanityCheck($text) {
     return mysql_real_escape_string(stripslashes($text));

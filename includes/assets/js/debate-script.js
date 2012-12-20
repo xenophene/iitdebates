@@ -437,19 +437,35 @@ function popovers() {
 }
 /* follow debate */
 function followDebate() {
-  if ($(this).attr('class') == 'btn btn-primary engage-btn') {
+  if ($(this).hasClass('btn-primary')) {
     $(this).removeClass('btn-primary');
     $(this).addClass('btn-danger');
     $(this).addClass('disabled');
     $(this).html('Following');
     $.ajax({
-      url: 'includes/ajax_script.php',
+      url: 'includes/ajax_scripts.php',
       type: 'POST',
       data: {
-	fid: 7,
-	follower: user,
-	debid: debid
+		fid: 7,
+		follower: user,
+		debid: debid
       }
+    });
+  } else {
+	$(this).removeClass('btn-danger');
+	$(this).addClass('btn-primary');
+    $(this).html('Follow');
+    $.ajax({
+      url: 'includes/ajax_scripts.php',
+      type: 'POST',
+      data: {
+		fid: 6,
+		user: user,
+		debid: debid
+      },
+	  success: function(data) {
+		console.log(data);
+	  }
     });
   }
 }
