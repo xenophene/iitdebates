@@ -61,9 +61,8 @@
   }
   function deleteSupportVote($comment, $user) {
     $dontShow = false;
-    //$date = timeStamp($comment['date']);
-    //if ($date != -1)
-    //  echo '<span class="comment-date" title="Post Time">'.($date).'</span>';
+    $date = timeStamp($comment['date']);
+    if ($date != -1) echo '<span class="comment-date" title="Post Time">'.($date).'</span>';
     
     if ($comment['author'] == $user and $user) {
       $dontShow = true;
