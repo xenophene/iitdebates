@@ -97,6 +97,7 @@
     <div id="profile">
       <div id="debate-details">
         <div class="topic"> <?php echo $debatetopic;?> </div>
+        <!-- making this editable -->
         <div class="desc"> 
           <p id="desc-data"> <?php echo $debatedesc; ?> </p>
         </div>
@@ -151,7 +152,7 @@
         <a title="See all followers" id="view-followers" class="btn engage-btn">Followers</a>
       </div>
     </div>
-    <div id="content">
+    <div id=" ">
       <div id="yes" class="leftcol">
         <div id="comments">
           <?php
@@ -211,5 +212,7 @@
     <script src="includes/assets/js/common.js"></script>
     <script src="includes/assets/js/pusher.min.js"></script>
     <script src="includes/assets/js/debate-script.js"></script>
+    
+
   </body>
 </html>
