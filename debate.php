@@ -93,10 +93,10 @@
     </div>
     <div id="profile">
       <div id="debate-details">
-        <!-- Topic editable -->
+        <!-- Topic inPlaceEditing -->
         <div class="topic" name="<?php echo $debid;?>"> <?php echo $debatetopic;?> </div>
         <div class="desc"> 
-          <!-- Making the description of debate editable(Currently editable for all.will have to change that.) -->
+          <!--Description inPlaceEditing (Currently editable for all.will have to change that.) -->
           <p id="desc-data" name="<?php echo $debid;?>"> <?php echo $debatedesc; ?> </p>
         </div>
         <div class="deb-themes">
@@ -159,6 +159,7 @@
               $authorUid = $comment['author'];
               $authorName = $comment['name'];
               if ($comment['foragainst']) {
+                //**** inPlaceEditing comments done in the php file****
                 commentInfo($comment, $authorUid, $authorName);
                 voteTally($comment['upvotes'], $comment['downvotes']);
                 /* only show the upvote/downvote if comment was NOT posted by me & 

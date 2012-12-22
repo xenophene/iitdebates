@@ -9,9 +9,12 @@ $(document).ready(function(){
 	  params:"field_type=desc&id="+$('#desc-data').attr('name'),
 	  success : function(newEditorContentString){return newEditorContentString;},
 	  field_type: "textarea",
+	  //bg_out: "#cff",
 	  textarea_rows: "15",
 	  textarea_cols: "35",
-	  saving_image: "../includes/assets/img/ajax-loader.gif",
+	  saving_image: "./includes/assets/img/ajax-loader.gif",
+	  saving_text : "Saving...",
+	  
 	  show_buttons: true
 	});
 
@@ -23,7 +26,7 @@ $(document).ready(function(){
 	  field_type: "textarea",
 	  textarea_rows: "5",
 	  textarea_cols: "35",
-	  saving_image: "../includes/assets/img/ajax-loader.gif",
+	  saving_image: "./includes/assets/img/ajax-loader.gif",
 	  show_buttons: true
 	});
 
@@ -35,14 +38,9 @@ $(document).ready(function(){
 	  field_type: "textarea",
 	  textarea_rows: "15",
 	  textarea_cols: "35",
-	  saving_image: "../includes/assets/img/ajax-loader.gif",
+	  saving_image: "./includes/assets/img/ajax-loader.gif",
 	  show_buttons: true
 	});
-
-	
-
-
-
 
 
 	// If you need to remove an already bound editor you can call
