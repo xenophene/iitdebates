@@ -56,7 +56,7 @@
       <div class="comment" name="'.$comment['comid'].'">
       <span class="author"><a href="home.php?fbid='.$authorUid.'"><img class="author-pic" src="https://graph.facebook.com/'
               .$comment['author'].'/picture?type=square"/>'.$authorName.'</a></span>
-      <span class="comment-data">'.$comment['value'].'</span>
+      <span class="comment-data" name="'.$comment['comid'].'">'.$comment['value'].'</span>
     ';
   }
   function deleteSupportVote($comment, $user) {

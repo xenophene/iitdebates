@@ -17,12 +17,10 @@
   $debate = getDebate($conn, $debid);
   $userid = $debate['creator'];
   
-  $ps = explode(',', listSanityCheck($debate['participants']));
-  
+  $ps = array_filter(explode(',', listSanityCheck($debate['participants'])));
   $is_participant = array_search($myfbid, $ps);
   
-  $fs = explode(',', listSanityCheck($debate['followers']));
-  
+  $fs = array_filter(explode(',', listSanityCheck($debate['followers'])));
   $debatetopic = $debate['topic'];
   $debatedesc = $debate['description'];
   $debatethemes = $debate['themes'];
@@ -43,7 +41,7 @@
   $creatorname = $creator['name'];
   
   $comments = commentsArray($conn, $debid);
-  updateToken($conn, $user, $debid, $token);
+  updateToken($conn, $myfbid, $debid, $token);
 ?>
 
 <!DOCTYPE html>
@@ -76,7 +74,6 @@
       <span class="logo"><a href="home.php">IIT Debates</a></span>
       <span class="fb-ju-ab">
         <ul>
-          <li><a href="fb-ju-ab.php#feedback" id="fb">Feedback</a></li>
           <li><a href="fb-ju-ab.php#join-us" id="ju">Join Us</a></li>
           <li><a href="fb-ju-ab.php#about" id="ab">About</a></li>
         </ul>
@@ -96,10 +93,11 @@
     </div>
     <div id="profile">
       <div id="debate-details">
-        <div class="topic"> <?php echo $debatetopic;?> </div>
-        <!-- making this editable -->
+        <!-- Topic editable -->
+        <div class="topic" name="<?php echo $debid;?>"> <?php echo $debatetopic;?> </div>
         <div class="desc"> 
-          <p id="desc-data"> <?php echo $debatedesc; ?> </p>
+          <!-- Making the description of debate editable(Currently editable for all.will have to change that.) -->
+          <p id="desc-data" name="<?php echo $debid;?>"> <?php echo $debatedesc; ?> </p>
         </div>
         <div class="deb-themes">
           <?php
@@ -134,7 +132,7 @@
       </table>
       <div class="engage">
         <?php if (!$is_participant and $signed_in): 
-          if (!array_search($myfbid, $fs)) {
+          if (!in_array($myfbid, $fs)) {
             $fclass = 'btn btn-primary';
             $ftext = 'Follow';
           } else {
@@ -152,7 +150,7 @@
         <a title="See all followers" id="view-followers" class="btn engage-btn">Followers</a>
       </div>
     </div>
-    <div id=" ">
+    <div id="content">
       <div id="yes" class="leftcol">
         <div id="comments">
           <?php
@@ -165,7 +163,7 @@
                 voteTally($comment['upvotes'], $comment['downvotes']);
                 /* only show the upvote/downvote if comment was NOT posted by me & 
                    I have not already upvoted or downvoted this comment */
-                deleteSupportVote($comment, $user);
+                deleteSupportVote($comment, $myfbid);
                 echo '</div>';
               }
             }
@@ -183,7 +181,7 @@
                 voteTally($comment['upvotes'], $comment['downvotes']);
                 /* only show the upvote/downvote if comment was NOT posted by me & 
                    I have not already upvoted or downvoted this comment */
-                deleteSupportVote($comment, $user);
+                deleteSupportVote($comment, $myfbid);
                 echo '</div>';
               }
             }
@@ -212,7 +210,7 @@
     <script src="includes/assets/js/common.js"></script>
     <script src="includes/assets/js/pusher.min.js"></script>
     <script src="includes/assets/js/debate-script.js"></script>
-    
-
+    <script src="includes/assets/js/editinplace.js"></script>
+    <script src="includes/assets/js/jquery.editinplace.js"></script>
   </body>
 </html>
