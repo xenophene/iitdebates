@@ -35,11 +35,11 @@ function showVoters() {
   var downvotersList = $(this).children('#downvoters').html();
   if (upvotersList == '' && downvotersList == '')
     return;
-  var upvoters = upvotersList.split(',');
-  var downvoters = downvotersList.split(',');
+  var upvoters = upvotersList.split(',').filter(arrayFilter);
+  var downvoters = downvotersList.split(',').filter(arrayFilter);
   var heading = 'People who voted on this point';
   var code = '';
-  if (upvoters != []) {
+  if (upvoters.length) {
     code += '<h3>People who upvoted this point</h3>';
     code += '<p><ul>';
     for (var i = 0; i < upvoters.length; i++) {
@@ -49,7 +49,7 @@ function showVoters() {
     }
     code += '</ul></p>';
   }
-  if (downvoters != []) {
+  if (downvoters.length) {
     code += '<h3>People who downvoted this point</h3>';
     code += '<p><ul>';
     for (var i = 0; i < downvoters.length; i++) {
@@ -117,12 +117,12 @@ function post(side, formatComment, comment, parentComId) {
   displayComment(side, formatComment);
 	var data = {
 	  "fid"       : 5,
-    "author"    : user, 
-    "authorname": myname,
-    "value"     : comment, 
-    "debid"     : debid, 
-    "foragainst": foragainstVal,
-    "parentId"  : parentComId
+	  "author"    : user, 
+	  "authorname": myname,
+	  "value"     : comment, 
+	  "debid"     : debid, 
+	  "foragainst": foragainstVal,
+	  "parentId"  : parentComId
 	};
 	if(pusher.connection.socket_id !== null) {
 	  data.socket_id = pusher.connection.socket_id;
@@ -332,7 +332,7 @@ function invite_to_debate() {
 }
 // send notifications to my friends and add them as participants
 function inviteFriends() {
-  var participants = $('#participants').val().split(',');
+  var participants = $('#participants').val().split(',').filter(arrayFilter);
   var names = [];
   var ids = [];
   var j = 0;

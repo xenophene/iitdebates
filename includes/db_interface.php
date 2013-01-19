@@ -69,7 +69,7 @@
   function getDebatesFollowed($conn, $fbid) {
     $query = "SELECT * FROM `debates` ".
              "WHERE `followers` LIKE '%$fbid%' ".
-			       "ORDER BY `startdate` DESC";
+			 "ORDER BY `startdate` DESC";
     $result = $conn->query($query);
     return $result;
   }

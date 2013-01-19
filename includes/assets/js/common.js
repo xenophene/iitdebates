@@ -8,6 +8,7 @@ var searchtypes = Array();
 var themes = Array('IIT Mess', 'IIT Politics', 'IIT Academics', 'IIT Hostels', 'IIT Cultural Events', 'IIT Sports Events', 'Nation & Economy');
 /* Library of common auxiliary functions that will be used by all the main
   js files on the respective pages */
+function arrayFilter(e) { return e; }
 function split( val ) {
   return val.split( /,\s*/ );
 }
