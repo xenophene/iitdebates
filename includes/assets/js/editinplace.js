@@ -1,27 +1,34 @@
 
-$(document).ready(function(){
-	
-	
-/*inPlaceEditing of debate description and save the new value.*/
 
+$(document).ready(function(){
+/*inPlaceEditing of debate description and save the new value.*/
+	
 	$("#desc-data").editInPlace({
-	  url: "./includes/save_edit.php",
-	  params:"field_type=desc&id="+$('#desc-data').attr('name'),
-	  success : function(newEditorContentString){return newEditorContentString;},
+	  url: "includes/ajax_scripts.php",
+	  method: 'POST',
+		params: keyValueString({
+		  'fid':'11',
+			'field_type':'desc',
+			'id': $('#desc-data').attr('name')
+		}),
+	  success : function (newEditorContentString) { return newEditorContentString; },
 	  field_type: "textarea",
 	  //bg_out: "#cff",
 	  textarea_rows: "15",
-	  textarea_cols: "35",
+	  textarea_cols: "80",
 	  saving_image: "./includes/assets/img/ajax-loader.gif",
 	  saving_text : "Saving...",
-	  
 	  show_buttons: true
 	});
 
 /*inPlaceEditing of debate Topic and save the new value.*/
-	$(".topic").editInPlace({
-	  url: "./includes/save_edit.php",
-	  params:"field_type=topic&id="+$(".topic").attr('name'),
+		$(".topic").editInPlace({
+	  url: "includes/ajax_scripts.php",
+	  params: keyValueString({
+				'fid': '11',
+				'field_type': 'topic',
+				'id': $(".topic").attr('name')
+		}),
 	  success : function(newEditorContentString){return newEditorContentString;},
 	  field_type: "textarea",
 	  textarea_rows: "5",
@@ -31,9 +38,14 @@ $(document).ready(function(){
 	});
 
 /*inPlaceEditing of debate Comment and save the new value.*/
+
 	$(".comment-data").editInPlace({
-	  url: "./includes/save_edit.php",
-	  params:"field_type=comment&id="+$(".comment").attr('name'),
+	  url: "includes/ajax_scripts.php",
+	  params: keyValueString({
+				'fid': '11',
+				'field_type': 'comment',
+				'id': $(".comment").attr('name')
+		}),
 	  success : function(newEditorContentString){return newEditorContentString;},
 	  field_type: "textarea",
 	  textarea_rows: "15",

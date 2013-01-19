@@ -6,6 +6,7 @@
      Each of these functions do the appropriate argument containment checks
   */
   include 'config.php';
+  require 'aux_functions.php';
   if (isset($_POST['fid'])) {
     
     $fid = $_POST['fid'];
@@ -20,6 +21,7 @@
       case 8: postVote($_POST, $conn, $fb); break;
       case 9: followUser($_POST, $conn, $fb); break;
       case 10: changeInterests($_POST, $conn, $fb); break;
+      case 11: editInPlace($_POST, $conn, $fb); break;
       default: pass();
     }
   }
@@ -225,14 +227,37 @@
     }
   }
   function changeInterests($_POST, $conn, $fb) {
+    require 'aux_functions.php';
     $fbid = sanityCheck($_POST['fbid']);
     $interest = sanityCheck($_POST['interests']);
     $user = $fb->getUser();
     if ($user != $fbid or !$user) return;
-    
     $query = "UPDATE `users` SET `interests`='$interest' WHERE `fbid`='$fbid'";
     $conn->query($query);
-    $result = mysql_query($query);
+  }
+  
+  function editInPlace($_POST, $conn, $fb) {
+    $new_value = sanityCheck($_POST['update_value']);
+    $type 	   = sanityCheck($_POST['field_type']);
+    $old_value = sanityCheck($_POST['original_html']);
+    $id        = sanityCheck($_POST['id']);
+    echo $new_value;
+    switch ($type) {
+      case 'desc':
+        $query = "UPDATE `debates` SET `description`='$new_value' WHERE `debid`='$id'";
+        break;
+      case 'topic':
+        $query = "UPDATE `debates` SET `topic`='$new_value' WHERE `debid`='$id'";
+        break;
+      case 'comment':
+        $query = "UPDATE `comments` SET `value`='$new_value' WHERE `comid`='$id'";
+        break;
+      default: $query = '';
+    }
+    /*
+    if ($conn->query($query)) {
+      echo $new_value;
+    } else echo $old_value;*/
   }
   function pass() {}
 ?>

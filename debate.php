@@ -94,10 +94,10 @@
     <div id="profile">
       <div id="debate-details">
         <!-- Topic inPlaceEditing -->
-        <div class="topic" name="<?php echo $debid;?>"> <?php echo $debatetopic;?> </div>
+        <div class="topic editable" name="<?php echo $debid;?>"> <?php echo $debatetopic;?> </div>
         <div class="desc"> 
           <!--Description inPlaceEditing (Currently editable for all.will have to change that.) -->
-          <p id="desc-data" name="<?php echo $debid;?>"> <?php echo $debatedesc; ?> </p>
+          <p class="editable" id="desc-data" name="<?php echo $debid;?>"> <?php echo $debatedesc; ?> </p>
         </div>
         <div class="deb-themes">
           <?php
@@ -152,18 +152,15 @@
     </div>
     <div id="content">
       <div id="yes" class="leftcol">
-        <div id="comments">
+        <div class="comments">
           <?php
             /* echo the comments from the comments array for the for side */
             foreach ($comments as $comment) {
               $authorUid = $comment['author'];
               $authorName = $comment['name'];
               if ($comment['foragainst']) {
-                //**** inPlaceEditing comments done in the php file****
-                commentInfo($comment, $authorUid, $authorName);
+                commentInfo($comment, $authorUid, $authorName, $myfbid);
                 voteTally($comment['upvotes'], $comment['downvotes']);
-                /* only show the upvote/downvote if comment was NOT posted by me & 
-                   I have not already upvoted or downvoted this comment */
                 deleteSupportVote($comment, $myfbid);
                 echo '</div>';
               }
@@ -178,10 +175,8 @@
               $authorUid = $comment['author'];
               $authorName = $comment['name'];
               if ($comment['foragainst'] == 0) {
-                commentInfo($comment, $authorUid, $authorName);
+                commentInfo($comment, $authorUid, $authorName, $myfbid);
                 voteTally($comment['upvotes'], $comment['downvotes']);
-                /* only show the upvote/downvote if comment was NOT posted by me & 
-                   I have not already upvoted or downvoted this comment */
                 deleteSupportVote($comment, $myfbid);
                 echo '</div>';
               }
@@ -211,7 +206,6 @@
     <script src="includes/assets/js/common.js"></script>
     <script src="includes/assets/js/pusher.min.js"></script>
     <script src="includes/assets/js/debate-script.js"></script>
-    <script src="includes/assets/js/editinplace.js"></script>
     <script src="includes/assets/js/jquery.editinplace.js"></script>
   </body>
 </html>
