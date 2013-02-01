@@ -155,9 +155,6 @@ td.interest-elements-p:hover {
   font-size: 20px;
   cursor: pointer;
 }
-#desc-data {
-  margin:0 0 4px;
-}
 #profile .pic {
   max-height: 250px;
   max-width: 250px;
@@ -216,7 +213,7 @@ td.interest-elements-p:hover {
 #profile div.desc {
   color: #444;
   font-size: 13px;
-  margin-top: 5px;
+  margin: 5px 0 5px 0;
 }
 #profile div.deb-themes {
   color: #555;

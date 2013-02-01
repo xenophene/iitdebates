@@ -95,9 +95,8 @@
       <div id="debate-details">
         <!-- Topic inPlaceEditing -->
         <div class="topic editable" name="<?php echo $debid;?>"> <?php echo $debatetopic;?> </div>
-        <div class="desc"> 
-          <!--Description inPlaceEditing (Currently editable for all.will have to change that.) -->
-          <p class="editable" id="desc-data" name="<?php echo $debid;?>"> <?php echo $debatedesc; ?> </p>
+        <div class="desc editable" name="<?php echo $debid;?>">
+          <?php echo $debatedesc;?>
         </div>
         <div class="deb-themes">
           <?php
@@ -205,7 +204,7 @@
     <script src="includes/assets/js/marked.js"></script>
     <script src="includes/assets/js/common.js"></script>
     <script src="includes/assets/js/pusher.min.js"></script>
-    <script src="includes/assets/js/debate-script.js"></script>
     <script src="includes/assets/js/jquery.editinplace.js"></script>
+    <script src="includes/assets/js/debate-script.js"></script>
   </body>
 </html>

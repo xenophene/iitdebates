@@ -371,6 +371,34 @@ function editDescription() {
   textarea.val(descOrig);
   textarea.autosize();
 }
+$('.editable').each(function () {
+	var field_type
+		, id;
+	id = $(this).attr('name');
+	
+	if ($(this).hasClass('topic')) {
+		field_type = 'topic';
+	} else if ($(this).hasClass('desc')) {
+		field_type = 'desc';
+	} else if ($(this).hasClass('comment-data')) {
+		field_type = 'comment';
+	}
+	$(this).editInPlace({
+		url: "includes/ajax_scripts.php",
+	  params: keyValueString({
+			'fid': '11',
+			'field_type': field_type,
+			'id': id
+		}),
+	  success : function(newEditorContentString){return newEditorContentString;},
+	  field_type: "textarea",
+	  textarea_rows: "15",
+	  textarea_cols: "35",
+	  saving_image: "./includes/assets/img/ajax-loader.gif",
+	  show_buttons: true
+	});
+});
+
 // view conversation starting from this conversation upwards following parent
 // pointers
 function viewConversation() {
@@ -502,7 +530,7 @@ $(function() {
   $('#view-followers').click({p: 2}, showConnections);
   $('#invite-to-debate').click(invite_to_debate);
   $('#follow-debate').click(followDebate);
-  $('#edit-desc').click(editDescription);
+  //$('#edit-desc').click(editDescription);
   $('textarea.yes, textarea.no').focus(show_format_rules);
   $('textarea.yes, textarea.no').blur(hide_format_rules);
   $('textarea.yes, textarea.no').keyup(function() {
