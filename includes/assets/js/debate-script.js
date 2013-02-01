@@ -33,13 +33,12 @@ function downvote() {
 function showVoters() {
   var upvotersList = $(this).children('#upvoters').html();
   var downvotersList = $(this).children('#downvoters').html();
-  if (upvotersList == '' && downvotersList == '')
-    return;
-  var upvoters = upvotersList.split(',').filter(arrayFilter);
-  var downvoters = downvotersList.split(',').filter(arrayFilter);
+  if (upvotersList == '' && downvotersList == '') return;
+  var upvoters = upvotersList.split(',');
+  var downvoters = downvotersList.split(',');
   var heading = 'People who voted on this point';
   var code = '';
-  if (upvoters.length) {
+  if (upvotersList  != '') {
     code += '<h3>People who upvoted this point</h3>';
     code += '<p><ul>';
     for (var i = 0; i < upvoters.length; i++) {
@@ -49,7 +48,7 @@ function showVoters() {
     }
     code += '</ul></p>';
   }
-  if (downvoters.length) {
+  if (downvotersList != '') {
     code += '<h3>People who downvoted this point</h3>';
     code += '<p><ul>';
     for (var i = 0; i < downvoters.length; i++) {
@@ -117,12 +116,12 @@ function post(side, formatComment, comment, parentComId) {
   displayComment(side, formatComment);
 	var data = {
 	  "fid"       : 5,
-	  "author"    : user, 
-	  "authorname": myname,
-	  "value"     : comment, 
-	  "debid"     : debid, 
-	  "foragainst": foragainstVal,
-	  "parentId"  : parentComId
+    "author"    : user, 
+    "authorname": myname,
+    "value"     : comment, 
+    "debid"     : debid, 
+    "foragainst": foragainstVal,
+    "parentId"  : parentComId
 	};
 	if(pusher.connection.socket_id !== null) {
 	  data.socket_id = pusher.connection.socket_id;
@@ -199,9 +198,9 @@ function setUpReply (elem, side) {
 }
 function support_point() {
   // show the textarea below this
-  if ($(this).parent().children('.reply').length == 0)
+  if ($(this).parent().children('.reply').length == 0) {
     setUpReply($(this), 'support');
-  else {
+  } else {
     $(this).parent().children('.reply').attr('id', 'support');
     $(this).parent().find('textarea').val('');
     $(this).parent().find('textarea').attr('placeholder', 'Support this point...');
@@ -332,7 +331,7 @@ function invite_to_debate() {
 }
 // send notifications to my friends and add them as participants
 function inviteFriends() {
-  var participants = $('#participants').val().split(',').filter(arrayFilter);
+  var participants = $('#participants').val().split(',');
   var names = [];
   var ids = [];
   var j = 0;
@@ -384,7 +383,7 @@ function viewConversation() {
   code += '</div>';
   var parentId = $(this).attr('name');
   var heading = 'View Full Conversation';
-  while (parentId != undefined) {
+  while (parentId) {
     var parentDiv = $('.comment[name=' + parentId + ']');
     parentId = parentDiv.children('.view-conversation').attr('name');
     var pcode = '<div class="comment">';
@@ -410,6 +409,7 @@ function popovers() {
     content: 'Follow this debate to stay updated with who said what.',
     placement: 'left'
   });
+	/*
   $('#view-participants').popover({
     title: 'View Participants',
     content: 'View the profiles of the people who have been invited to this debate.',
@@ -420,6 +420,7 @@ function popovers() {
     content: 'View the followers of this debate',
     placement: 'left'
   });
+  */
   $('#friend-search').tooltip({
     title: 'Search Debaters on IIT Debates',
     placement: 'left'
@@ -437,35 +438,19 @@ function popovers() {
 }
 /* follow debate */
 function followDebate() {
-  if ($(this).hasClass('btn-primary')) {
+  if ($(this).attr('class') == 'btn btn-primary engage-btn') {
     $(this).removeClass('btn-primary');
     $(this).addClass('btn-danger');
     $(this).addClass('disabled');
     $(this).html('Following');
     $.ajax({
-      url: 'includes/ajax_scripts.php',
+      url: 'includes/ajax_script.php',
       type: 'POST',
       data: {
-		fid: 7,
-		follower: user,
-		debid: debid
-      }
-    });
-  } else {
-	$(this).removeClass('btn-danger');
-	$(this).addClass('btn-primary');
-    $(this).html('Follow');
-    $.ajax({
-      url: 'includes/ajax_scripts.php',
-      type: 'POST',
-      data: {
-		fid: 6,
-		user: user,
-		debid: debid
-      },
-	  success: function(data) {
-		console.log(data);
-	  }
+				fid: 7,
+				follower: user,
+				debid: debid
+			}
     });
   }
 }
@@ -513,7 +498,6 @@ $(function() {
   $('.view-conversation').click(viewConversation);
   $('#post-yes').click(post_yes);
   $('#post-no').click(post_no);
-  
   $('#view-participants').click({p: 1}, showConnections);
   $('#view-followers').click({p: 2}, showConnections);
   $('#invite-to-debate').click(invite_to_debate);
@@ -523,16 +507,17 @@ $(function() {
   $('textarea.yes, textarea.no').blur(hide_format_rules);
   $('textarea.yes, textarea.no').keyup(function() {
     if ($(this).val().length > 0) {
-      if ($(this).attr('class') == 'yes')
+      if ($(this).attr('class') == 'yes') {
         $('#post-yes').removeAttr('disabled');
-      else
+      } else {
         $('#post-no').removeAttr('disabled');
-    }
-    else {
-      if ($(this).attr('class') == 'yes')
+      }
+    } else {
+      if ($(this).attr('class') == 'yes') {
         $('#post-yes').attr('disabled', 'disabled');
-      else
+      } else {
         $('#post-no').attr('disabled', 'disabled');
+      }
     }
   });
   marked.setOptions({

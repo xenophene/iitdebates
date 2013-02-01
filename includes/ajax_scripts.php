@@ -4,9 +4,10 @@
      suitable arguments
      map it to a function implemented which does the right thing!
      Each of these functions do the appropriate argument containment checks
+     MOVE ALL DB INTERFACE FUNCTIONS TO DB_INTERFACE
   */
   include 'config.php';
-  include 'aux_functions.php';
+  require 'aux_functions.php';
   if (isset($_POST['fid'])) {
     
     $fid = $_POST['fid'];
@@ -17,11 +18,11 @@
       case 4: inviteFriends($_POST, $conn, $fb); break;
       case 5: postComment($_POST, $conn, $fb); break;
       case 6: removeDebate($_POST, $conn, $fb); break;
-      case 7: followDebate($_POST, $conn, $fb); break;
+      case 7: followeDebate($_POST, $conn, $fb); break;
       case 8: postVote($_POST, $conn, $fb); break;
       case 9: followUser($_POST, $conn, $fb); break;
       case 10: changeInterests($_POST, $conn, $fb); break;
-      case 11: saveFeedback($_POST, $conn, $fb); break;
+      case 11: editInPlace($_POST, $conn, $fb); break;
       default: pass();
     }
   }
@@ -49,6 +50,7 @@
       catch(FacebookApiException $e) {}
     }
   }
+  /* SCALING UP ISSUE */
   function getUsers($p, $conn, $fb) {
     $rows = array();
     $query = "SELECT `uid`, `name` FROM `users`";
@@ -85,7 +87,7 @@
   function inviteFriends($POST, $conn, $fb) {
     $ids = listSanityCheck($_POST['ids']);
     $idNames = listSanityCheck($_POST['idNames']);
-    addUsers($ids, $idNames);
+    addUsers($conn, $ids, $idNames);
     
     $debid = sanityCheck($_POST['debid']);
     $inviterName = sanityCheck($_POST['inviterName']);
@@ -155,13 +157,13 @@
   function removeDebate($_POST, $conn, $fb) {
     $debid = $_POST['debid'];
     $user = $_POST['user'];
-    if ($user != $fb->getUser() or !$fb->getUser()) return;  // can only delete my own debates
+    if ($user != $fb->getUser()) return;  // can only delete my own debates
     // need to also unsubscribe from the UPDATES HERE!
     $query = "SELECT * FROM `debates` WHERE `debid`='$debid'";
     if ($result = $conn->query($query)) {
       if ($row = $result->fetch_assoc()) {
-        $p = removeFromString(listSanityCheck($row['participants']), $user);
-        $f = removeFromString(listSanityCheck($row['followers']), $user);
+        $p = removeFromString($row['participants'], $user);
+        $f = removeFromString($row['followers'], $user);
         $query = "UPDATE `debates` SET `participants`='$p', `followers`='$f' WHERE `debid`='$debid'";
         $conn->query($query);
         removeUpdateEntry($conn, $user, $debid);
@@ -169,8 +171,8 @@
     }
   }
   function followDebate($_POST, $conn, $fb) {
-    $debid = sanityCheck($_POST['debid']);
-    $nf = sanityCheck($_POST['follower']);
+    $debid = $_POST['debid'];
+    $nf = $_POST['follower'];
     $user = $fb->getUser();
     if ($nf != $user or !$user) return;
     
@@ -218,30 +220,45 @@
     $follow = sanityCheck($_POST['follow']); // whether to follow or unfollow
     $user = $fb->getUser();
     if ($follower != $user or !$user) return;
-    if ($follow == '1') {
-      $query = "INSERT INTO `follower` (`uid`, `follower`) VALUES ('$followee', '$follower')";
+    if ($follow) {
+      $query = "INSERT INTO `follower` (`uid`, `fbid`) VALUES ('$followee', '$follower')";
       $conn->query($query);
     } else {
-      $query = "DELETE FROM `follower` WHERE `uid`='$followee' AND `follower`='$follower'";
+      $query = "DELETE FROM `follower` WHERE `uid`='$followee' AND `fbid`='$follower'";
       $conn->query($query);
     }
   }
   function changeInterests($_POST, $conn, $fb) {
+    require 'aux_functions.php';
     $fbid = sanityCheck($_POST['fbid']);
     $interest = sanityCheck($_POST['interests']);
     $user = $fb->getUser();
     if ($user != $fbid or !$user) return;
-    
     $query = "UPDATE `users` SET `interests`='$interest' WHERE `fbid`='$fbid'";
     $conn->query($query);
-    $result = mysql_query($query);
   }
-  function saveFeedback($_POST, $conn, $fb) {
-    $e = sanityCheck($_POST['email']);
-    $c = sanityCheck($_POST['comment']);
-    $query = "INSERT INTO `feedback` (`email`, `comment`) VALUES ('$e', '$c')";
-    $conn->query($query);
-    echo $query;
+  
+  /* CHAL NAHI RAHA ABHI */
+  function editInPlace($_POST, $conn, $fb) {
+    $new_value = sanityCheck($_POST['update_value']);
+    $type 	   = sanityCheck($_POST['field_type']);
+    $old_value = sanityCheck($_POST['original_html']);
+    $id        = sanityCheck($_POST['id']);
+    switch ($type) {
+      case 'desc':
+        $query = "UPDATE `debates` SET `description`='$new_value' WHERE `debid`='$id'";
+        break;
+      case 'topic':
+        $query = "UPDATE `debates` SET `topic`='$new_value' WHERE `debid`='$id'";
+        break;
+      case 'comment':
+        $query = "UPDATE `comments` SET `value`='$new_value' WHERE `comid`='$id'";
+        break;
+      default: $query = '';
+    }
+    if ($conn->query($query)) {
+      echo $new_value;
+    } else echo $old_value;
   }
   function pass() {}
 ?>

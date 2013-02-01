@@ -1,5 +1,7 @@
 <?php
   /* all db interface query functions go here! */
+	/* NEED TO CHECK: FB->API(ME) IN WILL LEAD TO DUPLICATION */
+	
   function getUserProfile($conn, $key, $value, $fb) {
     $query = "SELECT * FROM `users` WHERE `$key`='$value'";
     if ($result = $conn->query($query)) {
@@ -8,7 +10,6 @@
       else {
         // insert this user into the table. and return the tuple
         try {
-          
           $profile = $fb->api('/me');
           $name = $profile['name'];
         } catch (FacebookApiException $e) {
@@ -29,14 +30,17 @@
   
   function navigateInto($conn, $fb, $g) {
     $myfbid = $fb->getUser();
+		
     if (isset($g['fbid'])) {
       $qfbid = $g['fbid'];
       $up = getUserProfile($conn, 'fbid', $qfbid, $fb);
       $up['me'] = $myfbid == $qfbid;
+			
     } else if (isset($g['uid'])) {
       $quid = $g['uid'];
       $up = getUserProfile($conn, 'uid', $quid, $fb);
       $up['me'] = $up['fbid'] == $myfbid;
+			
     } else if ($myfbid) {
       $up = getUserProfile($conn, 'fbid', $myfbid, $fb);
       try {
@@ -53,9 +57,8 @@
   }
   
   function getConnections($conn, $key1, $value, $key2) {
-	$key3 = $key2 == 'follower' ? 'fbid' : $key2;
     $query = "SELECT `users`.`fbid` FROM `follower`, `users` ".
-             "WHERE `follower`.`$key1`='$value' AND `follower`.`$key2`=`users`.`$key3`";
+             "WHERE `follower`.`$key1`='$value' AND `follower`.`$key2`=`users`.`$key2`";
     if ($result = $conn->query($query)) {
       $ids = array();
       while ($row = $result->fetch_assoc()) {
@@ -66,10 +69,11 @@
     } else return array();
   }
   
+	/* THIS NEEDS TO CHANGE. HAVE PARTICIPANTS AS SEPARATE ROW IN NEW TABLE */
   function getDebatesFollowed($conn, $fbid) {
     $query = "SELECT * FROM `debates` ".
              "WHERE `followers` LIKE '%$fbid%' ".
-			 "ORDER BY `startdate` DESC";
+			       "ORDER BY `startdate` DESC";
     $result = $conn->query($query);
     return $result;
   }
@@ -80,10 +84,13 @@
              "VALUES ('$source','$type','$target','$sourcename','$targetname', '$t')";
     $conn->query($query);
   }
+	
   function removeUpdateEntry($conn, $source, $target) {
     $query = "DELETE FROM `updates` WHERE `source`='$source' AND `target`='$target'";
     $conn->query($query);
   }
+	/* NEED TO CHANGE THE USER COLUMN DEBATES - TO BE A SEPARATE TABLE Nx3 (DEBID, FOLLOWER, TOKEN)
+	WHICH IS COMPARED WITH THE CENTRAL TOKEN FOR THE DEBATE*/
   function updateToken($conn, $user, $debate, $token) {
     $query = "SELECT `debates` FROM `users` ".
              "WHERE `fbid`='$user'";
@@ -103,7 +110,9 @@
       }
     }
   }
-  function addUsers($conn, $pids, $pnames) {
+  
+	/* INVITATION TO BE ACCEPTED BEFORE FOR NEW USERS */
+	function addUsers($conn, $pids, $pnames) {
     $pidArray = explode(',', $pids);
     $pnameArray = explode(',', $pnames);
     for ($i = 0; $i < sizeof($pidArray); $i++) {
@@ -119,6 +128,7 @@
       }
     }
   }
+	
   function getDebateCreator($conn, $userid) {
     $query = "SELECT * FROM `users` WHERE fbid='$userid'";
     if ($result = $conn->query($query)) {
@@ -130,6 +140,8 @@
     }
     return array();
   }
+	
+	/* CONSISTENCY OF RETURN TYPES! */
   function getDebate($conn, $debid) {
     $query = "SELECT * FROM `debates` WHERE `debid`='$debid'";
     if ($result = $conn->query($query)) {
@@ -153,8 +165,10 @@
     }
     return 0;
   }
+	
+	/* WILL BE CHANGED AFTER TABLE FORMAT CHANGES */
   /*Return the array of (debate,change) for the $user */
-  function debateUpdates($conn, $user){
+  function debateUpdates($conn, $user) {
     $query = "SELECT `debates` FROM `users` ".
              "WHERE `fbid`='$user'";
     if ($result = $conn->query($query)) {
@@ -183,6 +197,7 @@
     }
     return array();
   }
+	/* BETTER LOGIC TO BE IMPLEMENTED */
   function getActivities($conn) {
     /*Commented out because right now no fixed policy how to show updates
      * That's why selecting all the udpates from the table and showing.
