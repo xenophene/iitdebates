@@ -51,12 +51,14 @@
          '<span class="vote-count">'.($vote_tally).'</span>'.
          ' votes</span>';
   }
-  function commentInfo($comment, $authorUid, $authorName) {
+  function commentInfo($comment, $authorUid, $authorName, $myfbid) {
+    $class = 'comment-data';
+    if ($authorUid == $myfbid) $class = 'editable ' . $class;
     echo '
       <div class="comment" name="'.$comment['comid'].'">
-      <span class="author"><a href="home.php?fbid='.$authorUid.'"><img class="author-pic" src="https://graph.facebook.com/'
+      <span name="'.$authorUid.'" class="author"><a href="home.php?fbid='.$authorUid.'"><img class="author-pic" src="https://graph.facebook.com/'
               .$comment['author'].'/picture?type=square"/>'.$authorName.'</a></span>
-      <span class="comment-data">'.$comment['value'].'</span>
+      <span class="'.$class.'" name="'.$comment['comid'].'">'.$comment['value'].'</span>
     ';
   }
   function deleteSupportVote($comment, $user) {

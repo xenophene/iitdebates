@@ -15,6 +15,13 @@ function split( val ) {
 function extractLast( term ) {
   return split( term ).pop();
 }
+function keyValueString(obj) {
+  var s = [];
+  for (var k in obj) {
+    s.push(k + '=' + obj[k]);
+  }
+  return s.join('&');
+}
 // add the border to the taller of the left-right divs
 function addDivider() {
   try {
@@ -71,6 +78,36 @@ function searchSetup() {
     if (i != -1) window.location = 'home.php?uid=' + uids[i];
     else $(this).parent().children('input').val('');
   });
+  
+  $('.editable').each(function() {
+    $(this).tooltip({
+      'title': 'Click to edit'
+    });
+    var field_type
+      , id;
+    id = $(this).attr('name');
+    
+    if ($(this).hasClass('topic')) field_type = 'topic';
+    else if ($(this).attr('id') == 'desc-data') field_type = 'desc';
+    else if ($(this).hasClass('comment-data')) field_type = 'comment';
+    else return;
+    
+    
+    $(this).editInPlace({
+      url: "includes/ajax_scripts.php",
+      params: keyValueString({
+          'fid': '11',
+          'field_type': field_type,
+          'id': id
+      }),
+      success : function(newEditorContentString){return newEditorContentString;},
+      field_type: "textarea",
+      textarea_rows: "15",
+      textarea_cols: "35",
+      saving_image: "./includes/assets/img/ajax-loader.gif",
+      show_buttons: true
+    });
+  })
 }
 
 function renderOverlay(id, heading, code) {
