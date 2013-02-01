@@ -15,7 +15,7 @@ $(document).ready(function(){
 	  field_type: "textarea",
 	  //bg_out: "#cff",
 	  textarea_rows: "15",
-	  textarea_cols: "80",
+	  textarea_cols: "180",
 	  saving_image: "./includes/assets/img/ajax-loader.gif",
 	  saving_text : "Saving...",
 	  show_buttons: true

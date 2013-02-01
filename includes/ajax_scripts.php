@@ -4,6 +4,7 @@
      suitable arguments
      map it to a function implemented which does the right thing!
      Each of these functions do the appropriate argument containment checks
+     MOVE ALL DB INTERFACE FUNCTIONS TO DB_INTERFACE
   */
   include 'config.php';
   require 'aux_functions.php';
@@ -49,6 +50,7 @@
       catch(FacebookApiException $e) {}
     }
   }
+  /* SCALING UP ISSUE */
   function getUsers($p, $conn, $fb) {
     $rows = array();
     $query = "SELECT `uid`, `name` FROM `users`";
@@ -85,7 +87,7 @@
   function inviteFriends($POST, $conn, $fb) {
     $ids = listSanityCheck($_POST['ids']);
     $idNames = listSanityCheck($_POST['idNames']);
-    addUsers($ids, $idNames);
+    addUsers($conn, $ids, $idNames);
     
     $debid = sanityCheck($_POST['debid']);
     $inviterName = sanityCheck($_POST['inviterName']);
@@ -219,10 +221,10 @@
     $user = $fb->getUser();
     if ($follower != $user or !$user) return;
     if ($follow) {
-      $query = "INSERT INTO `follower` (`uid`, `follower`) VALUES ('$followee', '$follower')";
+      $query = "INSERT INTO `follower` (`uid`, `fbid`) VALUES ('$followee', '$follower')";
       $conn->query($query);
     } else {
-      $query = "DELETE FROM `follower` WHERE `uid`='$followee' AND `follower`='$follower'";
+      $query = "DELETE FROM `follower` WHERE `uid`='$followee' AND `fbid`='$follower'";
       $conn->query($query);
     }
   }
@@ -236,12 +238,12 @@
     $conn->query($query);
   }
   
+  /* CHAL NAHI RAHA ABHI */
   function editInPlace($_POST, $conn, $fb) {
     $new_value = sanityCheck($_POST['update_value']);
     $type 	   = sanityCheck($_POST['field_type']);
     $old_value = sanityCheck($_POST['original_html']);
     $id        = sanityCheck($_POST['id']);
-    echo $new_value;
     switch ($type) {
       case 'desc':
         $query = "UPDATE `debates` SET `description`='$new_value' WHERE `debid`='$id'";
@@ -254,10 +256,9 @@
         break;
       default: $query = '';
     }
-    /*
     if ($conn->query($query)) {
       echo $new_value;
-    } else echo $old_value;*/
+    } else echo $old_value;
   }
   function pass() {}
 ?>

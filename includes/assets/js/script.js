@@ -283,8 +283,8 @@ function showConnections(evt) {
   var code = '<ul>';
   for (var i = 0; i < n; i++) {
     code += '<li id="' + pids[i] + '"><a target="_blank" href="home.php?fbid=' +
-	    pids[i] + '"><img id="' + pids[i] + '" src="https://graph.facebook.com/' +
-	    pids[i] + '/picture"/></a></li>';
+	  pids[i] + '"><img id="' + pids[i] + '" src="https://graph.facebook.com/' +
+	  pids[i] + '/picture"/></a></li>';
   }
   code += '</ul>';
   var id = '#overlay';
@@ -344,15 +344,7 @@ function popovers() {
     content: "Follow this person's debates and activity",
     placement: 'left'
   });
-  $('#my-followers').popover({
-    content: "View My Followers",
-    placement: 'bottom'
-  });
-  $('#my-followees').popover({
-    content: "People who I am following",
-    placement: 'bottom'
-  });
-  $('#challenge').popover({
+	$('#challenge').popover({
     content: "Challenge this person to a new debate",
     placement: 'left'
   });
