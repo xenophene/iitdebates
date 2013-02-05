@@ -15,17 +15,6 @@
     <link rel="stylesheet" href="includes/assets/css/jquery-ui.css"/>
     <link rel="stylesheet" href="includes/assets/css/style.css"/>
     <link rel="icon" href="includes/assets/ico/favicon.ico"/>
-    <?php
-      echo "<script>
-        var myfbid = '$myfbid';
-        var ufbid = '". $up['fbid'] ."';
-        var uname = '". $up['name'] ."';
-        var uuid = '". $up['uid'] ."';
-        var followers = ". json_encode($followers) ."
-        var followees = ". json_encode($followees) ."
-            </script>
-      ";
-    ?>
   </head>
   <body>
     <!--Site Header-->
@@ -207,6 +196,18 @@
         </form>
       </div>
     </div>
+    
+    <?php
+      echo "<script>
+        var myfbid = '$myfbid';
+        var ufbid = '". $up['fbid'] ."';
+        var uname = '". $up['name'] ."';
+        var uuid = '". $up['uid'] ."';
+        var followers = ". json_encode($followers) ."
+        var followees = ". json_encode($followees) ."
+            </script>
+      ";
+    ?>
     <script src="includes/assets/js/jquery-1.7.2.min.js"></script>
     <script src="includes/assets/js/bootstrap.min.js"></script>
     <script src="includes/assets/js/jquery-ui-min.js"></script>

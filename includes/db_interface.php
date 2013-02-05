@@ -3,11 +3,14 @@
 	/* NEED TO CHECK: FB->API(ME) IN WILL LEAD TO DUPLICATION */
 	
   function getUserProfile($conn, $key, $value, $fb) {
+		$myfbid = $fb->getUser();
     $query = "SELECT * FROM `users` WHERE `$key`='$value'";
     if ($result = $conn->query($query)) {
-      if ($result->num_rows) $row = $result->fetch_assoc();
-      else if ($key === 'uid') $row = array();
-      else {
+      if ($result->num_rows) {
+				$row = $result->fetch_assoc();
+			} else if ($key === 'uid') {
+				$row = array();
+			} else if ($value == $myfbid) {
         // insert this user into the table. and return the tuple
         try {
           $profile = $fb->api('/me');
@@ -21,7 +24,9 @@
         $result->close();
         $result = $conn->query($query);
         $row = $result->fetch_assoc();
-      }
+      } else {
+				$row = array();
+			}
       $result->close();
       return $row;
     }

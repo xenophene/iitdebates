@@ -509,11 +509,11 @@ function desanitize() {
     newcomm = newcomm.substring(0, newcomm.length - 4);
     $(this).html(newcomm);
   });
-  var desc = $('#desc-data').html();
+  var desc = $('.desc').html();
   desc = desc.replace(/\\/g, '');
   desc = desc.replace(/(\n)(?!(\s))/g, '<br>');
   desc = desc.substring(0, desc.length - 4);
-  $('#desc-data').html(desc);
+  $('.desc').html(desc);
 }
 $(function() {
   $('textarea.yes, textarea.no').autosize();
