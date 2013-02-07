@@ -70,6 +70,7 @@
   }
   
 	/* THIS NEEDS TO CHANGE. HAVE PARTICIPANTS AS SEPARATE ROW IN NEW TABLE */
+/*
   function getDebatesFollowed($conn, $fbid) {
     $query = "SELECT * FROM `debates` ".
              "WHERE `followers` LIKE '%$fbid%' ".
@@ -77,7 +78,15 @@
     $result = $conn->query($query);
     return $result;
   }
-  
+ */
+// THE RETURN IS NOW DIFFERENT WILL HAVE TO CHECK ALSO WHERE RETURN IS SEEN.
+	function getDebatesFollowed($conn,$fbid){
+		//$query ="select * from `debate_followers`,`debates` where `debates`.`debid`=`debate_followers`.`debid` and `follower`='$fbid' order by `debid` DESC";
+		$query ="select * from `debates` where `debid` in (select `debid` from `debate_followers` where `follower`='$fbid')";
+		$result =$conn->query($query);
+		return result;
+	}
+	
   function updateActivity ($conn, $source, $type, $target, $sourcename, $targetname) {
     $t = time();
     $query = "INSERT INTO `updates` (`source`,`type`,`target`,`sourcename`,`targetname`,`timestamp`) ".
@@ -92,6 +101,8 @@
 	
 	/* NEED TO CHANGE THE USER COLUMN DEBATES - TO BE A SEPARATE TABLE Nx3 (DEBID, FOLLOWER, TOKEN)
 	WHICH IS COMPARED WITH THE CENTRAL TOKEN FOR THE DEBATE*/
+
+
 /*  
 	function updateToken($conn, $user, $debate, $token) {
     $query = "SELECT `debates` FROM `users` ".
@@ -166,7 +177,8 @@
       header('Location: home.php');
     }
   }
-  function getUserScore($conn, $fbid) {
+  
+	function getUserScore($conn, $fbid) {
     $query = "SELECT `score` FROM `users` WHERE `fbid`='$fbid'";
     if ($result = $conn->query($query)) {
       if ($row = $result->fetch_assoc()) {
