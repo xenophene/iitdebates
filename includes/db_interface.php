@@ -82,9 +82,14 @@
 // THE RETURN IS NOW DIFFERENT WILL HAVE TO CHECK ALSO WHERE RETURN IS SEEN.
 	function getDebatesFollowed($conn,$fbid){
 		//$query ="select * from `debate_followers`,`debates` where `debates`.`debid`=`debate_followers`.`debid` and `follower`='$fbid' order by `debid` DESC";
-		$query ="select * from `debates` where `debid` in (select `debid` from `debate_followers` where `follower`='$fbid')";
-		$result =$conn->query($query);
-		return result;
+		
+		$query ="select * from `debates` where `debid` in (select `debid` from `debate_followers` where `follower`=$fbid)";
+		
+		if ($result = $conn->query($query)) {
+			return $result;
+		}
+		
+		return $result;
 	}
 	
   function updateActivity ($conn, $source, $type, $target, $sourcename, $targetname) {
