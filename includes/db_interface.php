@@ -89,9 +89,11 @@
     $query = "DELETE FROM `updates` WHERE `source`='$source' AND `target`='$target'";
     $conn->query($query);
   }
+	
 	/* NEED TO CHANGE THE USER COLUMN DEBATES - TO BE A SEPARATE TABLE Nx3 (DEBID, FOLLOWER, TOKEN)
 	WHICH IS COMPARED WITH THE CENTRAL TOKEN FOR THE DEBATE*/
-  function updateToken($conn, $user, $debate, $token) {
+/*  
+	function updateToken($conn, $user, $debate, $token) {
     $query = "SELECT `debates` FROM `users` ".
              "WHERE `fbid`='$user'";
     if ($result = $conn->query($query)) {
@@ -105,12 +107,22 @@
             $debates = implode(",",$Dtokens);
             $conn->query("UPDATE `users` SET `debates`='$debates' ".
                          "WHERE `fbid`='$user'");
+            break;
           }
         }
       }
     }
   }
-  
+  */
+
+	function updateToken($conn,$user,$debate,$token){
+		$query = "select * from `debate_followers` where `debid`='$debate' and `follower`='$user'";
+//		Just to check if there is one entry.
+		if($result = $conn->query($query)){
+			$query = "update `debate_followers` (`user_token`) values ('$token') where `debid`='$debate' and `follower`='$user'";
+		}
+	}
+	
 	/* INVITATION TO BE ACCEPTED BEFORE FOR NEW USERS */
 	function addUsers($conn, $pids, $pnames) {
     $pidArray = explode(',', $pids);
@@ -168,7 +180,8 @@
 	
 	/* WILL BE CHANGED AFTER TABLE FORMAT CHANGES */
   /*Return the array of (debate,change) for the $user */
-  function debateUpdates($conn, $user) {
+  /*
+	function debateUpdates($conn, $user) {
     $query = "SELECT `debates` FROM `users` ".
              "WHERE `fbid`='$user'";
     if ($result = $conn->query($query)) {
@@ -197,6 +210,25 @@
     }
     return array();
   }
+	*/
+	
+	function debateUpdates($conn,$user){
+			$query = "select * from `debate_followers` where `follower`='$user'";
+			$result = $conn->query($query);
+			$debateArray= array();
+			while($row = $result->fetch_assoc()){
+				$debid = $row['debid'];
+				$user_token = $row['user_token'];
+				$q = "select `token` from `debates` where `debid`='$debid'";
+				$res = $conn->query($q);
+				$debate_token = $row['token'];
+				$debateArray[$debid] = intval($debate_token) - intval($user_token);
+			}
+			return $debateArray;
+	}
+	
+	
+	
 	/* BETTER LOGIC TO BE IMPLEMENTED */
   function getActivities($conn) {
     /*Commented out because right now no fixed policy how to show updates
