@@ -11,7 +11,7 @@
   if ($conn->connect_errno) die("Could not connect database");
   
   define('APP_ID', '139456172868758');
-  define('APP_SECRET', 'a7a5fbe24d85d85865e53c6661ff00f3');
+  define('APP_SECRET', '145479793df6c68ddc0c4cad6da4b93e');
   define('DOMAIN', '//localhost/iitdebates/');
   define('PUSHER_APP_ID', '26310');
   define('PUSHER_APP_KEY', '30650aaee53dcd153667');

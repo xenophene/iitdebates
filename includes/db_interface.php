@@ -151,6 +151,8 @@
     $query = "SELECT * FROM `debates` WHERE `debid`='$debid'";
     if ($result = $conn->query($query)) {
       if ($row = $result->fetch_assoc()) {
+				$row['topic'] = sanitizeForClient($row['topic']);
+				$row['description'] = sanitizeForClient($row['description']);
         $result->close();
         return $row;
       }
@@ -171,7 +173,7 @@
     return 0;
   }
 	
-	/* WILL BE CHANGED AFTER TABLE FORMAT CHANGES */
+	/* WILL BE CHANGED AFTER TABLE FORMAT CHANGES. Needs to changed */
   /*Return the array of (debate,change) for the $user */
   function debateUpdates($conn, $user) {
     $query = "SELECT `debates` FROM `users` ".
@@ -246,6 +248,8 @@
     if ($result = $conn->query($query)) {
       $comments = array();
       while ($row = $result->fetch_assoc()) {
+				// sanitize the comments
+				$row['value'] = sanitizeForClient($row['value']);
         array_push($comments, $row);
       }
       $result->close();

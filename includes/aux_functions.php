@@ -144,5 +144,10 @@
     array_push($a, $user);
     return listSanityCheck(implode(',', $a));
   }
+  
+  function sanitizeForClient($str) {
+    $str = stripslashes($str);
+    return $str;
+  }
 
 ?>

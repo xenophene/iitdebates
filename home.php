@@ -61,10 +61,8 @@
         <tbody>
           <tr>
             <td class="contain-interest"><span id="interested-in" class="interest">interested in:</span></td>
-            <td class="interest-elements"><?php echo $up['interests']; ?></td>
-            <?php if ($up['signed_in'] and $up['me']): ?>
-            <td class="interest-elements-p"><span class="add">+</span></td>
-            <?php endif; ?>
+            <?php $editable = ($up['signed_in'] and $up['me']) ? 'editable' : '';?>
+            <td name="<?php echo $up['fbid'];?>" class="interest-elements <?php echo $editable;?>"><?php echo $up['interests']; ?></td>
           </tr>
           <tr>
             <td><span id="debating-points" class="interest">debating points:</span></td>
@@ -211,6 +209,7 @@
     <script src="includes/assets/js/jquery-1.7.2.min.js"></script>
     <script src="includes/assets/js/bootstrap.min.js"></script>
     <script src="includes/assets/js/jquery-ui-min.js"></script>
+    <script src="includes/assets/js/jquery.editinplace.js"></script>
     <script src="includes/assets/js/common.js"></script>
     <script src="includes/assets/js/script.js"></script>
   </body>

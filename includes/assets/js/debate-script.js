@@ -390,7 +390,10 @@ $('.editable').each(function () {
 			'field_type': field_type,
 			'id': id
 		}),
-	  success : function(newEditorContentString){return newEditorContentString;},
+	  success : function(newEditorContentString){
+			console.log(newEditorContentString);
+			return formatString(newEditorContentString);
+		},
 	  field_type: "textarea",
 	  textarea_rows: "15",
 	  textarea_cols: "35",
@@ -437,18 +440,6 @@ function popovers() {
     content: 'Follow this debate to stay updated with who said what.',
     placement: 'left'
   });
-	/*
-  $('#view-participants').popover({
-    title: 'View Participants',
-    content: 'View the profiles of the people who have been invited to this debate.',
-    placement: 'left'
-  });
-  $('#view-followers').popover({
-    title: 'View Followers',
-    content: 'View the followers of this debate',
-    placement: 'left'
-  });
-  */
   $('#friend-search').tooltip({
     title: 'Search Debaters on IIT Debates',
     placement: 'left'
@@ -499,20 +490,18 @@ function show_format_rules() {
 function hide_format_rules() {
   $('.rules').slideUp("normal", function() { $(this).remove(); } );
 }
+function formatString(str) {
+	str = marked(str);
+	return str;
+}
 // desanitize will try to add formatting elements to the text
 function desanitize() {
   // for all the comments, run marked
   $('.comment .comment-data').each(function () {
-    var newcomm = marked($(this).html());
-    newcomm = newcomm.replace(/\\/g, '');
-    newcomm = newcomm.replace(/(\n)(?!(\s))/g, '<br>');
-    newcomm = newcomm.substring(0, newcomm.length - 4);
+    var newcomm = formatString($(this).html());
     $(this).html(newcomm);
   });
   var desc = $('.desc').html();
-  desc = desc.replace(/\\/g, '');
-  desc = desc.replace(/(\n)(?!(\s))/g, '<br>');
-  desc = desc.substring(0, desc.length - 4);
   $('.desc').html(desc);
 }
 $(function() {

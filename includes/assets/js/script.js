@@ -373,7 +373,30 @@ function postFb() {
     $(this).html('Post this debate on to Facebook');
   }
 }
-
+function setEditable() {
+	$('.editable').each(function () {
+		var field_type
+			, id;
+		id = $(this).attr('name');
+		
+		if ($(this).hasClass('interest-elements')) {
+			field_type = 'interests';
+		}
+		console.log('1');
+		$(this).editInPlace({
+			url: "includes/ajax_scripts.php",
+			params: keyValueString({
+				'fid': '12',
+				'field_type': field_type,
+				'id': id
+			}),
+			success : function(newEditorContentString){return newEditorContentString;},
+			field_type: "text",
+			saving_image: "./includes/assets/img/ajax-loader.gif",
+			show_buttons: true
+		});
+	});
+}
 $(function() {
   clearDebateForm();
   $('#start').click(defineDebate);
@@ -393,4 +416,5 @@ $(function() {
   $('#my-followees').click({p1: '2'}, showConnections);
   popovers();
   searchSetup();
+	setEditable();
 });

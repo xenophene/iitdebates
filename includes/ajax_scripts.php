@@ -22,7 +22,8 @@
       case 8: postVote($_POST, $conn, $fb); break;
       case 9: followUser($_POST, $conn, $fb); break;
       case 10: changeInterests($_POST, $conn, $fb); break;
-      case 11: editInPlace($_POST, $conn, $fb); break;
+      case 11: editDebates($_POST, $conn, $fb); break;
+      case 12: editProfile($_POST, $conn, $fb); break;
       default: pass();
     }
   }
@@ -239,7 +240,7 @@
   }
   
   /* CHAL NAHI RAHA ABHI */
-  function editInPlace($_POST, $conn, $fb) {
+  function editDebates($_POST, $conn, $fb) {
     $new_value = sanityCheck($_POST['update_value']);
     $type 	   = sanityCheck($_POST['field_type']);
     $old_value = sanityCheck($_POST['original_html']);
@@ -257,8 +258,23 @@
       default: $query = '';
     }
     if ($conn->query($query)) {
-      echo $new_value;
-    } else echo $old_value;
+      echo sanitizeForClient($new_value);
+    } else {
+      echo sanitizeForClient($old_value);
+    }
+  }
+  
+  function editProfile($_POST, $conn, $fb) {
+    $new_value = sanityCheck($_POST['update_value']);
+    $type 	   = sanityCheck($_POST['field_type']);
+    $old_value = sanityCheck($_POST['original_html']);
+    $id        = sanityCheck($_POST['id']);
+    $query     = "UPDATE `users` SET `interests`='$new_value' WHERE `fbid`='$id'";
+    if ($conn->query($query)) {
+      echo sanitizeForClient($new_value);
+    } else {
+      echo sanitizeForClient($old_value);
+    }
   }
   function pass() {}
 ?>
