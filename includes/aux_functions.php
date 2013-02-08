@@ -65,7 +65,6 @@
     $dontShow = false;
     $date = timeStamp($comment['date']);
     if ($date != -1) echo '<span class="comment-date" title="Post Time">'.($date).'</span>';
-    
     if ($comment['author'] == $user and $user) {
       $dontShow = true;
       echo '
@@ -124,12 +123,10 @@
   //    $facebook->api('/?batch='.urlencode(json_encode($queries)), 'POST');
   //  } catch (Exception $e) { echo 'error'; }
   //}
-  //function removeFromString($str, $needle) {
-  //  $p = explode(',', $str);
-  //  if ($key = array_search($needle, $p) !== false) unset($p[$key]);
-  //  $p = implode(',', $p);
-  //  return $p;
-  //}
+  function removeFromString($str, $needle) {
+    $p = explode(',', $str);
+    return implode(',', array_diff($p, array($needle)));
+  }
   
   function sanityCheck($text) {
     return mysql_real_escape_string(stripslashes($text));

@@ -138,7 +138,7 @@ abstract class BaseFacebook
     CURLOPT_RETURNTRANSFER => true,
     CURLOPT_PROXY          => '10.10.78.62',
     CURLOPT_PROXYPORT      => '3128',
-    CURLOPT_PROXYUSERPWD   => 'cs5080224:xyz',
+    CURLOPT_PROXYUSERPWD   => 'cs5080220:xyz',
   );
 
   /**

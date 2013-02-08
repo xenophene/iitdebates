@@ -4,8 +4,8 @@
   
   $myfbid = $fb->getUser();
   $up = navigateInto($conn, $fb, $_GET);
-  $followers = getConnections($conn, 'uid', $up['uid'], 'fbid');
-  $followees = getConnections($conn, 'fbid', $up['fbid'], 'uid');
+  $followers = getConnections($conn, 'uid', $up['uid'], 'follower');
+  $followees = getConnections($conn, 'follower', $up['fbid'], 'uid');
 ?>
 <!DOCTYPE html>
 <html>
@@ -22,7 +22,6 @@
       <span class="logo"><a href="home.php">IIT Debates</a></span>
       <span class="fb-ju-ab">
         <ul>
-          <li><a href="fb-ju-ab.php#feedback" id="fb">Feedback</a></li>
           <li><a href="fb-ju-ab.php#join-us" id="ju">Join Us</a></li>
           <li><a href="fb-ju-ab.php#about" id="ab">About</a></li>
         </ul>
@@ -35,11 +34,7 @@
             <div class="icon-search icon-black"></div>
           </li>
           <li class="log-out-link"><a href="home.php">Home</a></li>
-          <li class="log-out-link" id="log-out-btn">
-            <a href="logout.php">
-              Log Out
-            </a>
-          </li>
+          <li class="log-out-link" id="log-out-btn"><a href="logout.php">Log Out</a></li>
         <?php else: ?>
           <li class="log-out-link">
             <a href="<?php echo $fb->getLoginUrl($params);?>">Sign In</a>
@@ -75,8 +70,8 @@
         <a title="Start a New debate" id="start" class="btn btn-primary usr-engage-btn">Start a new debate</a><br/>
         <a title="View my followers" id="my-followers" class="btn usr-engage-btn">My Followers</a><br/>
         <a title="View my followees" id="my-followees" class="btn usr-engage-btn">My Followees</a>
-      <?php elseif ($up['signed_in']): 
-        if (in_array($myfbid, $followers)) {
+      <?php elseif ($up['signed_in']):
+        if (!in_array($myfbid, $followers)) {
           $fclass = 'btn btn-primary';
           $ftext = 'Follow';
         } else {
@@ -143,12 +138,6 @@
       </div>
       <div id="my-updates" class="rightcol">
         <span class="home-heading">Updates</span>
-        <div class="update">
-          <strong>
-            Please leave your comments, feedback or queries 
-            <a href="fb-ju-ab.php#feedback">here</a>.
-          </strong>
-        </div>
         <?php echo getActivities($conn);?>
       </div>
       <div class="clear"></div>

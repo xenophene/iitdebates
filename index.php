@@ -28,7 +28,6 @@
       <a href="<?php echo $fb->getLoginUrl($params);?>" class="btn btn-primary btn-large">Sign in with Facebook</a>
       <ul>
         <li class="first"><a href="fb-ju-ab.php#join-us">Join Us</a></li>
-        <li class="second"><a href="fb-ju-ab.php#feedback">Feedback</a></li>
         <li><a href="fb-ju-ab.php#about">About</a></li>
       </ul>
     </div>
