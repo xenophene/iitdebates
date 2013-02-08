@@ -136,9 +136,11 @@ abstract class BaseFacebook
     CURLOPT_TIMEOUT        => 60,
     CURLOPT_USERAGENT      => 'facebook-php-3.2',
     CURLOPT_RETURNTRANSFER => true,
+    /*
     CURLOPT_PROXY          => '10.10.78.62',
     CURLOPT_PROXYPORT      => '3128',
     CURLOPT_PROXYUSERPWD   => 'cs5080220:xyz',
+    */
   );
 
   /**

@@ -86,10 +86,10 @@
  */
 // THE RETURN IS NOW DIFFERENT WILL HAVE TO CHECK ALSO WHERE RETURN IS SEEN.
 	function getDebatesFollowed($conn,$fbid){
-		//$query ="select * from `debate_followers`,`debates` where `debates`.`debid`=`debate_followers`.`debid` and `follower`='$fbid' order by `debid` DESC";
-		$query ="select * from `debates` where `debid` in (select `debid` from `debate_followers` where `follower`='$fbid')";
+		//$query ="SELECT * from `debate_followers`,`debates` where `debates`.`debid`=`debate_followers`.`debid` and `follower`='$fbid' order by `debid` DESC";
+		$query ="SELECT * from `debates` where `debid` in (SELECT `debid` from `debate_followers` where `follower`='$fbid')";
 		$result =$conn->query($query);
-		return result;
+		return $result;
 	}
 	
   function updateActivity ($conn, $source, $type, $target, $sourcename, $targetname) {
@@ -132,7 +132,7 @@
   */
 
 	function updateToken($conn,$user,$debate,$token){
-		$query = "select * from `debate_followers` where `debid`='$debate' and `follower`='$user'";
+		$query = "SELECT * from `debate_followers` where `debid`='$debate' and `follower`='$user'";
 //		Just to check if there is one entry.
 		if($result = $conn->query($query)){
 			$query = "update `debate_followers` (`user_token`) values ('$token') where `debid`='$debate' and `follower`='$user'";
@@ -232,13 +232,13 @@
 	*/
 	
 	function debateUpdates($conn,$user){
-			$query = "select * from `debate_followers` where `follower`='$user'";
+			$query = "SELECT * from `debate_followers` where `follower`='$user'";
 			$result = $conn->query($query);
 			$debateArray= array();
-			while($row = $result->fetch_assoc()){
+			while ($row = $result->fetch_assoc()){
 				$debid = $row['debid'];
 				$user_token = $row['user_token'];
-				$q = "select `token` from `debates` where `debid`='$debid'";
+				$q = "SELECT `token` from `debates` where `debid`='$debid'";
 				$res = $conn->query($q);
 				$debate_token = $row['token'];
 				$debateArray[$debid] = intval($debate_token) - intval($user_token);
@@ -251,7 +251,7 @@
 	/* BETTER LOGIC TO BE IMPLEMENTED */
   function getActivities($conn) {
     /*Commented out because right now no fixed policy how to show updates
-     * That's why selecting all the udpates from the table and showing.
+     * That's why SELECTing all the udpates from the table and showing.
      * whihch can be filtered and show only updates from $friends(which is
      * not properly defined now)*/
 	
