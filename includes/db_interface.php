@@ -86,10 +86,11 @@
  */
 // THE RETURN IS NOW DIFFERENT WILL HAVE TO CHECK ALSO WHERE RETURN IS SEEN.
 	function getDebatesFollowed($conn,$fbid){
-		//$query ="SELECT * from `debate_followers`,`debates` where `debates`.`debid`=`debate_followers`.`debid` and `follower`='$fbid' order by `debid` DESC";
 		$query ="SELECT * from `debates` where `debid` in (SELECT `debid` from `debate_followers` where `follower`='$fbid')";
 		$result =$conn->query($query);
-		return $result;
+		if ($result = $conn->query($query)) {
+			return $result;
+		}
 	}
 	
   function updateActivity ($conn, $source, $type, $target, $sourcename, $targetname) {
@@ -240,7 +241,7 @@
 				$user_token = $row['user_token'];
 				$q = "SELECT `token` from `debates` where `debid`='$debid'";
 				$res = $conn->query($q);
-				$debate_token = $row['token'];
+				$debate_token = $row['user_token'];
 				$debateArray[$debid] = intval($debate_token) - intval($user_token);
 			}
 			return $debateArray;
