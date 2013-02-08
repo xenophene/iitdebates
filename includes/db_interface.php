@@ -238,7 +238,7 @@
 				$user_token = $row['user_token'];
 				$q = "select `token` from `debates` where `debid`='$debid'";
 				$res = $conn->query($q);
-				$debate_token = $row['token'];
+				$debate_token = $row['user_token'];
 				$debateArray[$debid] = intval($debate_token) - intval($user_token);
 			}
 			return $debateArray;
