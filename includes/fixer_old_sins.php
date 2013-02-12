@@ -57,7 +57,7 @@ function copyDebatethemes(){
 	
 function copyUserInterest(){
   global $conn;
-		$query = "SELECT * from `users`";
+  $query = "SELECT * from `users`";
 		if($result = $conn->query($query)){
 			while($row = $result->fetch_assoc()){
 				$uid = $row['uid'];
@@ -71,9 +71,45 @@ function copyUserInterest(){
 		}
   return "Copied interests of Users Successfully. !";
 	}	
-	
+
+function copyCommentVotes(){
+  global $conn;
+	$query ="select * from `comments`";
+	if($result =$conn->query($query)){
+				while($row=$result->fetch_assoc()){
+				  $comid = $row['comid'];
+					$upvotes  = explode(',',$row['upvotes']);
+					$downvotes= explode(',',$row['downvotes']);
+//					Copying all the upvoters for the comment comid
+				  
+					
+					if(!empty($upvotes[0])){
+								for($i = 0; $i < sizeof($upvotes);$i++){
+								$q ="insert into `comment_upvotes` (`comid`,`upvote`) values".
+								     "('$comid','$upvotes[$i]')";
+								$conn->query($q);
+								}			
+					}
+					
+//					Copying all the downvoters for the comment comid
+				  if(!empty($downvotes[0])){
+								for($j = 0; $j < sizeof($downvotes); $j++){
+											$q = "insert into `comment_downvotes` (`comid`,`downvote`)".
+														"values ('$comid','$downvotes[$j]')";
+											$conn->query($q);
+								}			
+					}
+					
+					
+				}
+	}
+  return "Copied votes of comments Successfully. !";
+}
+				
 	//echo (copyDebateFollowers());
 	//echo (copyDebateParticipants());
 	//echo copyDebatethemes();
 	//echo copyUserInterest();
+    echo copyCommentVotes();
+	
 ?>

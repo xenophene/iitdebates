@@ -8,6 +8,8 @@
   */
   include 'config.php';
   require 'aux_functions.php';
+  include 'reputation.php';
+  
   if (isset($_POST['fid'])) {
     
     $fid = $_POST['fid'];
@@ -18,7 +20,7 @@
       case 4: inviteFriends($_POST, $conn, $fb); break;
       case 5: postComment($_POST, $conn, $fb); break;
       case 6: removeDebate($_POST, $conn, $fb); break;
-      case 7: followeDebate($_POST, $conn, $fb); break;
+      case 7: followDebate($_POST, $conn, $fb); break;
       case 8: postVote($_POST, $conn, $fb); break;
       case 9: followUser($_POST, $conn, $fb); break;
       case 10: changeInterests($_POST, $conn, $fb); break;
@@ -207,9 +209,19 @@
         $value = $row[$key];
         $value = addToString($value, $userid);
         $uscore = getUserScore($conn, $userid);
-        $query = "UPDATE `comments` SET `".$key."`='$value', ".
-                 "`score`=`score`+'$uscore' WHERE `comid`='$comid'";
+
+//        INSERTING THE UP/DOWN VOTE.CHANGE IN CODE AS CHANGE IN TABLE
+        //$query = "UPDATE `comments` SET `".$key."`='$value', ".
+                 //"`score`=`score`+'$uscore' WHERE `comid`='$comid'";
+        if($upvote == 1)
+          $query = "insert into `comment_upvotes` (`comid`,`upvote`)".
+                   "values ('$comid','$userid')";
+        else
+          $query = "insert into `comment_downvotes` (`comid`,`downvote`) ".
+                   "values ('$comid','$userid') ";
         $conn->query($query);
+//        ALSO NEEDS TO UPDATE USER AND DEBATE SCORE.
+        voteScoreUpdate($comid,$userid,$upvote,$conn);
       }
     }
   }
@@ -228,6 +240,7 @@
       $conn->query($query);
     }
   }
+
   function changeInterests($_POST, $conn, $fb) {
     require 'aux_functions.php';
     $fbid = sanityCheck($_POST['fbid']);
