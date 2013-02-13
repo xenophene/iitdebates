@@ -17,6 +17,7 @@
   define('PUSHER_APP_KEY', '30650aaee53dcd153667');
   define('PUSHER_APP_SECRET', '0cda60cc48b6bd735061');
   
+  
   $fb = new Facebook(array(
                      "appId"   =>  APP_ID,
                      "secret"  =>  APP_SECRET
